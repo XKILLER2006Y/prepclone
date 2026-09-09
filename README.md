@@ -2,190 +2,236 @@
 
 > **Mission**: Right to Education — 100% Free, Zero-Paywall, Zero-Subscription NCERT Practice & Mastery Platform for NEET & JEE Aspirants.
 
-PrepClone is a client-first, offline-capable clone and enhancement of [PrepPage](https://preppage.in), built to provide students across India with unrestricted access to NCERT textbook curriculum, paragraph-anchored question banks, authentic PDF scans, interactive Computer-Based Testing (CBT), and active recall spaced repetition systems.
+PrepClone is a client-first, offline-capable clone and enhancement of [PrepPage](https://preppage.in), built to give students across India unrestricted access to the complete NCERT science curriculum, paragraph-anchored question banks, authentic NCERT PDFs, an NTA CBT Mock Simulator, spaced repetition flashcards, and active recall tools.
+
+## 🌐 Live Website (24/7 — No PC Required)
+
+**https://xkiller2006y.github.io/prepclone/**
+
+Open on any device: PC, Mac, Android, iPhone, tablet. Install as a PWA from your browser's "Add to Home Screen" option for offline access.
+
+- GitHub Repository: https://github.com/XKILLER2006Y/prepclone
+- Local development: `python3 -m http.server 8000` then open `http://localhost:8000/`
+- Local + live tunnel: `./host.sh start` (uses Cloudflare tunnel)
 
 ---
 
-## 🌟 Key Highlights & Comparison
+## 🆚 PrepClone vs PrepPage Pro
 
 | Feature | PrepPage Pro (Paid) | PrepClone (100% Free Forever) |
 |---|:---:|:---:|
-| **Paywalls / Subscriptions** | ₹₹₹ Monthly / Annual Paywall | **Zero (100% Free Forever)** |
-| **User Accounts / Tracking** | Required (Clerk / Auth gated) | **No Account Required** (Local-first persistence) |
-| **NCERT Curriculum Coverage** | Gated past Page 5 | **All 10 Books · 79 Chapters · 1,690 Pages (100% Complete)** |
-| **Question Bank Size** | Restricted | **7,136 Verified NCERT High-Yield Questions + PYQs** |
-| **Official NCERT PDFs** | 403 Forbidden without login | **79 Offline PDFs Bundled Locally (1,690 Pages Total)** |
-| **Textbook Reading Modes** | Single mode | **3 Modes**: Authentic Sheet, Mozilla PDF.js Canvas, Google Embed |
-| **Highlighter Precision** | Broad box overlay | **Exact Sentence-Level Stabilo Golden Marker Pen** |
-| **Modern Exam Patterns** | Standard MCQs only | **Assertion-Reason (A/R), Statements I & II, Match-the-Columns** |
-| **Formula Cheat Sheets** | None / Add-on | **Instant Slide-Out Drawer (`Alt+F`) with 50+ Verified Formulas** |
-| **Printable Revision Sheets** | None | **One-Click Export to Clean PDF / Printable Revision Notes** |
-| **NTA NEET/JEE CBT Simulator**| Limited drills | **Full NTA-Spec 200-Min 720-Mark Exam Simulator with Scorecards** |
-| **Active Recall Flashcards** | None | **SuperMemo SM-2 Spaced Repetition Engine** |
-| **Competitor Superpowers** | Paid extras | **Audio NCERT Podcast, Cloze Deletion Blanks, EffortDNA Pacing, Mistake Buckets** |
-| **Offline Capability** | Online Only | **100% Offline PWA (Service Worker Cached)** |
-| **Audio Feedback** | None | **Web Audio API Synth (Click, Success, Marker Pen Swish)** |
+| **Paywalls / Subscriptions** | ₹₹₹ Monthly / Annual | **Zero (100% Free Forever)** |
+| **User Accounts / Tracking** | Required | **No Account (Local-first)** |
+| **NCERT Curriculum Coverage** | Gated past Page 5 | **10 Books · 79 Chapters · 1,690 Pages** |
+| **Question Bank** | Restricted | **7,136 Questions (6,326 MCQs + 810 PYQs)** |
+| **Official NCERT PDFs** | 403 without login | **79 Offline PDFs bundled locally** |
+| **Reader Modes** | Single mode | **3 Modes: Sheet, PDF.js Canvas, Google Embed** |
+| **Highlighter Precision** | Broad overlay | **Sentence-level golden Stabilo marker pen** |
+| **Exam Patterns** | Standard MCQs | **A/R, Statements I & II, Match-the-Columns** |
+| **Formula Reference** | None | **Instant Drawer (Alt+F) · 60 verified formulas** |
+| **Printable Notes** | None | **One-click print-optimized revision sheet** |
+| **CBT Simulator** | Limited | **Full NTA-spec 200-min NEET simulator** |
+| **Active Recall** | None | **SuperMemo SM-2 spaced repetition · 60 cards** |
+| **PYQ Badges (Inline)** | None | **MemoNeet-style inline sentence badges** |
+| **Mistake Buckets** | None | **5-bucket categorization + practice drills** |
+| **Pacing Analytics** | None | **Darwin EffortDNA per-question timer** |
+| **Audio TTS Reader** | None | **NeetPrep-style NCERT podcast (Web Speech API)** |
+| **Cloze Blanks** | None | **MemoNeet-style active recall masking** |
+| **Offline Capability** | Online only | **100% Offline PWA (Service Worker)** |
+| **Keyboard Navigation** | None | **Arrow keys, A-D, H, S, Space, Ctrl+K, Alt+F** |
 
 ---
 
-## 📚 Complete Curriculum Coverage (100% Authentic NCERT)
+## 📚 Complete Curriculum (10 Books · 79 Chapters · 1,690 Pages)
 
-PrepClone covers all 10 core NCERT science textbooks for Classes XI and XII across Physics, Chemistry, and Biology from Page 1 to the final page of every single chapter:
+| Book | Chapters | Pages | Questions | PDFs |
+|---|:---:|:---:|:---:|:---:|
+| Biology Class XI | 19 | 252 | 1,142 | 19 |
+| Biology Class XII | 13 | 228 | 889 | 13 |
+| Chemistry Class XI Part 1 | 6 | 220 | 944 | 6 |
+| Chemistry Class XI Part 2 | 3 | 93 | 368 | 3 |
+| Chemistry Class XII Part 1 | 5 | 140 | 643 | 5 |
+| Chemistry Class XII Part 2 | 5 | 144 | 628 | 5 |
+| Physics Class XI Part 1 | 7 | 143 | 599 | 7 |
+| Physics Class XI Part 2 | 7 | 133 | 588 | 7 |
+| Physics Class XII Part 1 | 8 | 214 | 869 | 8 |
+| Physics Class XII Part 2 | 6 | 123 | 471 | 6 |
+| **Total** | **79** | **1,690** | **7,136** | **79** |
 
-1. **Biology Class XI** (`biology-11`): 19 Chapters · 252 Pages · 1,142 Questions · Official PDF `kebo101`–`kebo119`
-2. **Biology Class XII** (`biology-12`): 13 Chapters · 228 Pages · 889 Questions · Official PDF `lebo101`–`lebo113`
-3. **Chemistry Class XI Part 1** (`chemistry-11-part-1`): 6 Chapters · 220 Pages · 944 Questions · Official PDF `kech101`–`kech106`
-4. **Chemistry Class XI Part 2** (`chemistry-11-part2`): 3 Chapters · 93 Pages · 368 Questions · Official PDF `kech201`–`kech203`
-5. **Chemistry Class XII Part 1** (`chemistry-12-part-1`): 5 Chapters · 140 Pages · 643 Questions · Official PDF `lech101`–`lech105`
-6. **Chemistry Class XII Part 2** (`chemistry-12-part-2`): 5 Chapters · 144 Pages · 628 Questions · Official PDF `lech201`–`lech205`
-7. **Physics Class XI Part 1** (`physics-11-part-1`): 7 Chapters · 143 Pages · 599 Questions · Official PDF `keph101`–`keph107`
-8. **Physics Class XI Part 2** (`physics-11-part-2`): 7 Chapters · 133 Pages · 588 Questions · Official PDF `keph201`–`keph207`
-9. **Physics Class XII Part 1** (`physics-12-part-1`): 8 Chapters · 214 Pages · 869 Questions · Official PDF `leph101`–`leph108`
-10. **Physics Class XII Part 2** (`physics-12-part-2`): 6 Chapters · 123 Pages · 471 Questions · Official PDF `leph201`–`leph206`
-
-**Grand Total**: **10 Books · 79 Chapters · 1,690 NCERT Textbook Pages · 7,136 Questions (6,326 Textbook MCQs + 810 PYQs) · 79 Bundled NCERT Chapter PDFs**.
+> Full per-chapter breakdown with exact page counts and PDF paths: see [`CHAPTER_MAP.md`](./CHAPTER_MAP.md).
 
 ---
 
-## 🚀 Core Features
+## 🚀 Features
 
 ### 1. Authentic Split-View NCERT Reader
-- **Left Pane**: Features three switchable reading modes:
-  - **📖 NCERT Book**: Verbatim textbook sheet replicating the official NCERT running head, typography, topic subheadings, and paragraph layout.
-  - **📄 PDF Canvas**: Native Mozilla PDF.js v3.11.174 client-side rendering with zoom, pan, and coordinate overlay bounding boxes.
-  - **🌐 Embed**: Native NCERT PDF iframe with automatic fallbacks to Google Drive mirrors.
-- **Right Pane**: Interactive questions for the active page, with options, difficulty badges, exam tags, instant checking, and detailed NCERT conceptual explanations.
+Three switchable left-pane modes:
+- **📖 NCERT Book**: Verbatim textbook sheet with running head, topic subheadings, and paragraph layout.
+- **📄 PDF Canvas**: Mozilla PDF.js v3.11.174 canvas rendering with zoom and coordinate highlight overlay.
+- **🌐 Embed**: Native NCERT PDF iframe, falls back to Google Drive mirror automatically.
+
+Right pane: interactive question stream for the active page (options, difficulty, exam tags, explanations, NCERT anchors).
 
 ### 2. Sentence-Level Golden Stabilo Marker Pen
-- Clicking **💡 Hint & NCERT Anchor** on any question card dynamically identifies the **exact sentence or clause** within the target NCERT textbook paragraph that directly answers the question.
-- Highlights the text with an animated golden fluorescent marker pen effect (`<mark class="ncert-sentence-marker">`) and plays an authentic soft marker pen swish sound via the Web Audio API.
+Clicking **💡 Hint & NCERT Anchor** on a question:
+1. Scores every sentence in the target paragraph by keyword overlap with the question, options, and answer.
+2. Wraps the winning sentence in `<mark class="ncert-sentence-marker sweep">`.
+3. Plays a Web Audio API marker-sweep sound.
+4. Smooth-scrolls the textbook to center the highlighted sentence.
 
-### 3. Modern Exam Pattern Filters (NEET 2024–2026)
-- Filter chapter questions by examination pattern:
-  - `⚡ Assertion-Reason (A/R)`
-  - `📋 Statements I & II`
-  - `🔗 Match-the-Columns`
-  - `◉ Standard NCERT MCQ`
-- Filter by difficulty (`Easy`, `Medium`, `Hard`, `PYQs`) and target exam (`ALL`, `NEET`, `JEE`).
+### 3. Modern Exam Pattern Filters
+- `⚡ Assertion-Reason (A/R)` · `📋 Statements I & II` · `🔗 Match-the-Columns` · `◉ Standard MCQ`
+- Filter by difficulty (Easy / Medium / Hard / PYQs) and exam (ALL / NEET / JEE).
 
-### 4. Formula & Concept Reference Drawer (`Alt+F`)
-- Instant slide-out drawer accessible from anywhere in the app or via `Alt+F`.
-- Categorized by **Physics XI**, **Physics XII**, **Chemistry**, and **Biology**.
-- Includes verified formulas, SI units, dimensional formulas, thermodynamic equations, optics laws, and genetic ratios.
-- Real-time search filter for equations, laws, and constants.
+### 4. Formula & Concept Drawer (`Alt+F`)
+- Slide-out drawer accessible anywhere via `Alt+F` or the toolbar button.
+- 60 verified formulas across Physics XI, Physics XII, Chemistry, Biology.
+- Real-time global search (searches all subject tabs simultaneously).
 
-### 5. Printable Revision Notes Exporter
-- Click **🖨️ Revision Notes** in any chapter header to generate a print-optimized revision sheet.
-- Contains the chapter syllabus summary, verbatim core textbook anchors with highlighted key statements, relevant formulas, and high-yield questions with worked explanations.
-- Formatted with clean CSS `@media print` rules for direct export to PDF or physical printout.
+### 5. Printable Revision Notes
+- `exportRevisionNotes()` generates a print-optimized chapter summary.
+- Includes: syllabus overview, verbatim textbook anchors, relevant formulas, high-yield questions + solutions.
+- Clean `@media print` CSS — works with browser's "Print to PDF".
 
-### 6. NTA Computer-Based Test (CBT) Simulator
-- Replicates the official National Testing Agency (NTA) exam interface.
-- Presets for:
-  - **Full NEET Mock Test** (200 minutes · 720 marks · Physics, Chemistry, Botany, Zoology)
-  - **Physics Drill** (45 mins · 45 Qs)
-  - **Chemistry Drill** (45 mins · 45 Qs)
-  - **Biology Drill** (45 mins · 45 Qs)
-  - **Quick Mix Drill** (15 mins · 10 Qs)
-- Features official 5-state question palette:
-  - ⚪ Not Visited
-  - 🔴 Not Answered
-  - 🟢 Answered
-  - 🟣 Marked for Review
-  - 🟣🟢 Answered & Marked for Review
-- Comprehensive performance scorecard with section-wise marks (+4/−1 marking scheme), accuracy percentage, and review solutions.
+### 6. NTA CBT Mock Simulator
+Replicates the NTA NEET/JEE exam interface:
+- **Presets**: Full NEET (200 min · 720 marks), Physics/Chemistry/Biology Drills (45 min · 45 Qs), Quick Mix (15 min · 10 Qs).
+- **5-state palette**: ⚪ Not Visited · 🔴 Not Answered · 🟢 Answered · 🟣 Marked for Review · 🟣🟢 Answered+Marked.
+- **Scorecard**: section-wise marks, accuracy %, +4/−1 marking, full solution review.
 
-### 7. SuperMemo SM-2 Active Recall Flashcards
-- Spaced Repetition System (SRS) based on the scientifically proven SM-2 algorithm.
-- Displays high-yield concept prompts with 3D flip card animation.
-- Rate your recall (`Again <1m`, `Hard 1d`, `Good 3d`, `Easy 6d`) to dynamically adjust repetitions, ease factors (EF), and intervals.
+### 7. SuperMemo SM-2 Flashcards
+- 60 high-yield NCERT cards covering Physics, Chemistry, and Biology.
+- SM-2 algorithm: rate recall (Again / Hard / Good / Easy) → dynamically adjusts intervals and ease factor.
 
 ### 8. Analytics & NEET Score Predictor
-- Live KPI cards: Total Answered, Platform Accuracy, Study Streak, and Predicted NEET Score (out of 720).
-- Subject mastery breakdown bars for Physics, Chemistry, Botany, and Zoology.
-- 7-day study activity heatmap.
+- KPIs: Total Answered, Platform Accuracy, Study Streak, Predicted NEET Score (out of 720).
+- Subject mastery bars (Physics, Chemistry, Botany, Zoology) + 7-day heatmap.
+- EffortDNA™ pacing matrix: speed distribution with per-subject benchmarks.
 
 ### 9. Mistakes & Starred Notebook
-- Automatically captures every incorrectly answered question into a dedicated revision notebook.
-- Re-attempt mistakes with single-click answer clearing.
-- Star questions anytime with the `★` bookmark button for targeted pre-exam revision.
+- Auto-captures incorrect answers into a revision notebook.
+- 5-bucket error classification: 🟡 Silly · 🔴 Conceptual · 🟣 Formula/Fact · ⚪ Guess.
+- Bucket filter chips + targeted "Practice Bucket Quiz".
+- Starred questions for pre-exam revision.
 
 ### 10. Global Omnisearch (`Ctrl+K`)
-- Instant keyword search across all 79 chapters, 2,785 questions, and formulas with keyboard navigation.
+- Instant cross-book search across 7,136+ questions, 79 chapters, formulas.
+- Question banks preloaded in background on first open.
 
-### 11. MemoNeet-Style Inline NCERT PYQ Badges
-- Interactive badges (e.g. `🎯 NEET '23`, `🎯 NEET '21`) embedded directly beside textbook sentences in the authentic reader.
-- Clicking any badge instantly highlights the sentence in gold, scrolls the question panel to the exact PYQ, and triggers an attention pulse.
+### 11. Inline NCERT PYQ Badges
+- `🎯 NEET '23`, `🎯 JEE '21` badges embedded beside exact textbook sentences.
+- Click → highlight sentence in gold + scroll question panel to that PYQ.
 
-### 12. Marks-Style Mistake Categorization Buckets & Revision Vault
-- When an answer is submitted incorrectly, a 1-click mistake categorization bar appears:
-  - 🟡 **Silly Mistake** (Misread question, calculation slip)
-  - 🔴 **Conceptual Trap** (Theory misconception)
-  - 🟣 **Formula / Fact Slip** (Forgot constant or equation)
-  - ⚪ **Wild Guess**
-- In the **Notebook**, dedicated bucket filters allow students to isolate specific error types and launch targeted **"Practice Bucket Quizzes"**.
+### 12. EffortDNA Pacing & Question Timer
+- Per-question live timer vs NEET benchmarks (Biology 35s, Chemistry 60s, Physics 80s).
+- Speed tags: 🟢 Optimal · 🟡 Moderate · 🔴 Time Sink (>90s) · ⚡ Rushed (<8s).
 
-### 13. Darwin-Style EffortDNA Pacing & Question Timer
-- Discreet live question timer tracking seconds per question against standard NEET pacing benchmarks (Biology 35s, Chemistry 60s, Physics 80s).
-- Tags each attempt: 🟢 **Optimal Speed**, 🟡 **Moderate**, 🔴 **Time Sink (>90s)**, ⚡ **Rushed Guess (<8s)**.
-- Integrated **EffortDNA™ Matrix** on the Analytics dashboard with speed distributions and actionable pacing coaching.
+### 13. Audio NCERT Podcast
+- Web Speech API TTS reads each sentence aloud with a real-time scrolling cursor.
+- Controls: Play/Pause, Skip ⏮️/⏭️, Speed (0.85×, 1.0×, 1.25×, 1.5×).
 
-### 14. Neetprep-Style Audio NCERT Podcast Reader (Native Web Speech API)
-- 100% free, client-side text-to-speech engine that reads textbook sentences aloud.
-- Real-time reading cursor: highlights and scrolls each sentence as it is spoken.
-- Controls for `Play/Pause`, `Skip Sentences (⏮️/⏭️)`, and `Speed (0.85x, 1.0x, 1.25x, 1.5x)`.
-
-### 15. MemoNeet-Style Cloze Deletion Active Recall Mode
-- `🧠 Cloze Recall` toggle in the reader toolbar masks high-yield scientific names, enzymes, chemical formulas, and constants with interactive `[ ????? ]` blanks.
-- Tapping any blank flips it to reveal the verbatim term for rapid active recall drills.
+### 14. Cloze Deletion Active Recall
+- `🧠 Cloze Recall` toggle masks scientific keywords with `[ ????? ]` interactive blanks.
+- Tap any blank to reveal the verbatim NCERT term.
+- Dynamic extraction: works across all 1,690 pages, not a static word list.
 
 ---
 
-## ⌨️ Keyboard Shortcuts Cheatsheet
+## ⌨️ Keyboard Shortcuts
 
 | Shortcut | Action |
 |---|---|
-| `Ctrl + K` or `Cmd + K` | Open Global Omnisearch |
-| `Alt + F` | Toggle Formula & Constants Drawer |
-| `Esc` | Close Omnisearch, Formula Drawer, or Modal |
-| `1` / `2` / `3` / `4` or `A` / `B` / `C` / `D` | Select Question Option (Chapter & Quiz views) |
-| `H` | Toggle Hint & Sentence Marker Highlight |
-| `S` | Toggle Bookmark / Star Question |
-| `Space` | Flip Flashcard (in Flashcards mode) |
+| `Ctrl+K` / `Cmd+K` | Open Global Omnisearch |
+| `Alt+F` | Toggle Formula Drawer |
+| `Esc` | Close modal / drawer |
+| `←` / `→` | Previous / Next NCERT page (reader mode) |
+| `1`–`4` or `A`–`D` | Select answer option |
+| `H` | Toggle Hint & Sentence Marker |
+| `S` | Toggle Star/Bookmark |
+| `Space` | Flip Flashcard |
 
 ---
 
-## 🛠️ Architecture & Local Setup
+## 🛠️ Setup & Local Development
 
-PrepClone is intentionally built as a lightweight, zero-dependency static Progressive Web Application (PWA).
-
-### Prerequisites
-- Any modern web browser (Chrome, Firefox, Safari, Edge, Chromium).
-- Optional: Python 3, Node.js, or any static HTTP server.
-
-### Running Locally
 ```bash
-# Clone or navigate to the repository
-cd preppage-clone
+# 1. Clone the repository
+git clone https://github.com/XKILLER2006Y/prepclone.git
+cd prepclone
 
-# Start a local HTTP server using Python:
+# 2. Serve locally (any HTTP server works)
 python3 -m http.server 8000
+# → open http://localhost:8000/
 
-# Or using Node.js:
-npx serve .
+# 3. Or use the hosting script (starts server + Cloudflare live tunnel)
+./host.sh start      # Start server + live tunnel
+./host.sh status     # Show live URL
+./host.sh stop       # Stop everything
 ```
-Visit `http://localhost:8000/` in your browser.
 
-### Running Automated Playwright Test Suite
+### Running the Test Suite
 ```bash
-# Run the 62-test automated end-to-end suite:
+# Core Platform Suite (62 assertions)
 NODE_PATH=/tmp/opencode/node_modules node /tmp/opencode/pwtest/test.js
+
+# Deep Live Audit (46 assertions)
+NODE_PATH=/tmp/opencode/node_modules node scratch/deep_live_audit.js
+
+# Enterprise Features Suite (14 assertions)
+NODE_PATH=/tmp/opencode/node_modules node scratch/test_enterprise_features.js
+```
+**Current status: 122/122 tests passing · 0 JS errors · 0 404s**
+
+---
+
+## 📁 Project Structure
+
+```
+preppage-clone/
+├── index.html          # Entire SPA: router, all views, all JS (4,570 lines)
+├── styles.css          # All styles: themes, animations, print CSS (64 KB)
+├── sw.js               # Service Worker: offline precache (prepclone-v2.1.0)
+├── manifest.json       # PWA manifest: name, icons, theme color
+├── host.sh             # One-click server + Cloudflare tunnel manager
+├── data/
+│   ├── biology-11.json         # 252 pages, 1,142 questions
+│   ├── biology-12.json         # 228 pages, 889 questions
+│   ├── chemistry-11-part-1.json# 220 pages, 944 questions
+│   ├── chemistry-11-part2.json # 93 pages, 368 questions
+│   ├── chemistry-12-part-1.json# 140 pages, 643 questions
+│   ├── chemistry-12-part-2.json# 144 pages, 628 questions
+│   ├── physics-11-part-1.json  # 143 pages, 599 questions
+│   ├── physics-11-part-2.json  # 133 pages, 588 questions
+│   ├── physics-12-part-1.json  # 214 pages, 869 questions
+│   ├── physics-12-part-2.json  # 123 pages, 471 questions
+│   ├── pyq.json                # 810 real PYQs (NEET & JEE 2010–2025)
+│   └── formulas.json           # 60 formula reference cards
+├── books/
+│   ├── biology-11/     # kebo101.pdf – kebo119.pdf (19 PDFs)
+│   ├── biology-12/     # lebo101.pdf – lebo113.pdf (13 PDFs)
+│   ├── chemistry-11-part-1/  # kech101–kech106 (6 PDFs)
+│   ├── chemistry-11-part2/   # kech201–kech203 (3 PDFs)
+│   ├── chemistry-12-part-1/  # lech101–lech105 (5 PDFs)
+│   ├── chemistry-12-part-2/  # lech201–lech205 (5 PDFs)
+│   ├── physics-11-part-1/    # keph101–keph107 (7 PDFs)
+│   ├── physics-11-part-2/    # keph201–keph207 (7 PDFs)
+│   ├── physics-12-part-1/    # leph101–leph108 (8 PDFs)
+│   └── physics-12-part-2/    # leph201–leph206 (6 PDFs)
+├── vendor/pdfjs/       # Mozilla PDF.js v3.11.174 (bundled, offline)
+├── images/             # PWA icons (SVG)
+├── CHANGELOG.md        # Full version history of every change
+├── CHAPTER_MAP.md      # Per-chapter inventory: pages, Qs, PDF paths
+├── ARCHITECTURE.md     # Technical deep-dive: state model, schemas, algorithms
+├── PROGRESS.md         # Test results and content verification ledger
+├── RESEARCH.md         # PYQ source chains and competitor analysis
+└── ROADMAP.md          # Milestone tracker
 ```
 
 ---
 
 ## 🔒 Privacy & Philosophy
 
-- **Zero Remote Tracking**: All study history, bookmarks, CBT scores, and streak data remain strictly on your device in `localStorage`.
-- **Zero Data Collection**: No cookies, no analytics tracking, no external login providers.
-- **Fair Use Educational Clone**: Developed for non-commercial educational empowerment, research, and offline learning under the fundamental right to free education.
+- **Zero Remote Tracking**: All progress, bookmarks, CBT scores, and streaks stay on your device in `localStorage`.
+- **Zero Data Collection**: No cookies, no analytics, no external login.
+- **Offline-First**: Service Worker precaches all 10 books and 810 PYQs on install.
+- **Fair-Use Educational**: Built for non-commercial educational empowerment under the right to free education.

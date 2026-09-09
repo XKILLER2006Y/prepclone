@@ -1,0 +1,155 @@
+# CHANGELOG — PrepClone Enterprise
+
+All notable changes to PrepClone are documented in reverse-chronological order.
+
+---
+
+## [v2.1.0] — 2026-09-09 — Production Release · 24/7 Live Hosting
+
+### 🌐 Deployment
+- **GitHub Pages Live**: Deployed the full platform (350 MB) to https://xkiller2006y.github.io/prepclone/
+  - Repository: https://github.com/XKILLER2006Y/prepclone
+  - Accessible on any device: PC, laptop, mobile, tablet — no PC needs to be running.
+  - PWA installable on Android and iOS ("Add to Home Screen").
+- **Cloudflare Tunnel**: Local fallback tunnel via `./host.sh start` for development preview.
+- Added `host.sh` management script: `start` / `stop` / `status` / `restart` commands.
+- Added `.gitignore` to exclude logs, temp files, and Python caches from version control.
+
+### 📋 CHAPTER_MAP.md — Full Regeneration
+- Regenerated from live data via `generate_chapter_map.py` (Python, reads `data/*.json` + `pyq.json`).
+- Every row now has: Chapter #, Chapter Name, NCERT Online PDF link, Local PDF path (`books/<bookId>/<code>.pdf`), exact Pages count, Regular Questions, PYQs, Total Questions, and VERIFIED status.
+- All 79 rows show `VERIFIED` — confirming every chapter has both a local PDF on disk and non-empty page data.
+- Summary section: 10 books · 79 chapters · 1,690 pages · 6,326 regular Qs · 810 PYQs · 7,136 total Qs · 79/79 PDFs present.
+
+### 🔒 Service Worker (`sw.js`) — Full Offline Precache
+- **Cache version bumped to `prepclone-v2.1.0`**.
+- All 10 `data/*.json` files and `data/pyq.json` added to `STATIC_ASSETS` precache list.
+- Students now get 100% offline access to all 1,690 pages and 7,136 questions on first load — no prior browsing of individual chapters required.
+
+### 🔍 Global Omnisearch (`index.html`)
+- Question banks for all 10 books now preload in the background when Omnisearch (`Ctrl+K`) is first opened.
+- Placeholder updated from "2,785 questions" → `Search 7,136+ questions, 79 chapters, NCERT topics...`.
+- Omnisearch now returns results from the full 7,136-question cross-book pool on cold open.
+
+### ⚡ Formula Drawer — Global Search
+- `renderFormulaGroups()` updated to search across **all subject categories** (Physics XI, Physics XII, Chemistry, Biology) whenever a query is active.
+- Previously restricted to the active tab only — typing "Carnot" in Biology tab returned 0 results; now returns correct Physics XII results.
+
+### 🎴 Flashcards — Expanded to 60 Cards
+- `HIGH_YIELD_FLASHCARDS` expanded from 18 starter cards to **60 comprehensive NCERT active recall cards**.
+- Covers: Physics laws & constants, named chemical reactions, biology classification, cell biology, genetics, ecology, and thermodynamics.
+- All cards follow SM-2 spaced repetition with `repetitions`, `interval`, `easeFactor`, and `dueDate` tracking.
+
+### ⌨️ Reader Keyboard Navigation
+- `ArrowLeft` (`←`) now triggers `goPage(currentPageNum - 1)` in `chapter` mode.
+- `ArrowRight` (`→`) now triggers `goPage(currentPageNum + 1)` in `chapter` mode.
+- Both respect page bounds (clamp to valid range, no underflow/overflow).
+
+### 🧠 Cloze Active Recall — Dynamic Extraction
+- `applyClozeToNcertPage()` updated to dynamically extract `keyTerm` from each paragraph's dataset plus a comprehensive bank of scientific terminology.
+- Previously relied on a static fallback list that missed keywords on chapter intro pages.
+- Now covers 100% of all 1,690 pages with appropriate cloze blanks.
+
+### 📝 Notebook Categorization
+- `.nb-bucket-chip` CSS class added to mistake bucket filter buttons in the Notebook view.
+- Full flow verified: Wrong answer → categorization bar → bucket tag → notebook filter → practice drill.
+
+### ✅ Automated Tests — 122 / 122 Passing
+| Suite | Assertions | Result |
+|---|:---:|:---:|
+| Deep Live Audit (`deep_live_audit.js`) | 46 | 46/46 ✅ |
+| Core Platform Suite (`test.js`) | 62 | 62/62 ✅ |
+| Enterprise Features Suite (`test_enterprise_features.js`) | 14 | 14/14 ✅ |
+| **Total** | **122** | **122/122 ✅** |
+
+Zero JS console errors. Zero 404s. 79/79 exact chapter last-page matches.
+
+---
+
+## [v2.0.0] — 2026-09-09 — Full Curriculum Expansion + Enterprise Features
+
+### 📚 Content — Complete 10-Book Curriculum
+- **Physics Class XI Part 1** (7 chapters, 143 pages, 599 Qs) — Added: `physics-11-part-1.json`, `keph101`–`keph107.pdf`
+- **Physics Class XI Part 2** (7 chapters, 133 pages, 588 Qs) — Added: `physics-11-part-2.json`, `keph201`–`keph207.pdf`
+- **Physics Class XII Part 1** (8 chapters, 214 pages, 869 Qs) — Added: `physics-12-part-1.json`, `leph101`–`leph108.pdf`
+- **Physics Class XII Part 2** (6 chapters, 123 pages, 471 Qs) — Added: `physics-12-part-2.json`, `leph201`–`leph206.pdf`
+- All 4 Physics books, 28 chapters, 613 pages, and 2,527 questions added to complete the full JEE+NEET science curriculum.
+
+### 🎯 Competitor Feature: Inline PYQ Badges (MemoNeet-style)
+- `🎯 NEET '23`, `🎯 JEE '21` badges embedded inline beside exact textbook sentences in the authentic NCERT reader.
+- Clicking any badge: scrolls question panel to the PYQ, highlights sentence in gold, triggers attention pulse animation.
+
+### 📂 Competitor Feature: Mistake Categorization Buckets (Marks-style)
+- On incorrect answer: instant 1-tap categorization bar appears with 4 error types:
+  - 🟡 Silly Mistake · 🔴 Conceptual Trap · 🟣 Formula/Fact Slip · ⚪ Wild Guess
+- Notebook view: bucket filter chips isolate error types; "Practice Bucket Quiz" launches targeted re-drill.
+
+### ⏱️ Competitor Feature: EffortDNA Pacing & Question Timer (Darwin-style)
+- Live per-question timer tracks seconds against NEET pacing benchmarks.
+- Speed tags: 🟢 Optimal · 🟡 Moderate · 🔴 Time Sink (>90s) · ⚡ Rushed Guess (<8s)
+- EffortDNA™ Matrix on Analytics dashboard: speed distributions and pacing coaching.
+
+### 🎙️ Competitor Feature: Audio NCERT Podcast (NeetPrep-style)
+- Client-side Web Speech API TTS reads textbook sentences aloud.
+- Real-time reading cursor: highlights and scrolls each sentence as spoken.
+- Controls: Play/Pause, Skip Forward/Back sentences, Speed (0.85×, 1.0×, 1.25×, 1.5×).
+
+### 🧩 Competitor Feature: Cloze Deletion Active Recall (MemoNeet-style)
+- `🧠 Cloze Recall` toggle in reader toolbar masks scientific terms with `[ ????? ]` blanks.
+- Tapping a blank reveals the verbatim term.
+
+### 🧪 NTA CBT Mock Simulator — Full NTA Specification
+- Presets: Full NEET (200 min, 720 marks), Physics/Chemistry/Biology Drills (45 min, 45 Qs), Quick Mix (15 min, 10 Qs).
+- 5-state question palette (⚪ Not Visited, 🔴 Not Answered, 🟢 Answered, 🟣 Marked, 🟣🟢 Answered+Marked).
+- Section tabs: Physics, Chemistry, Botany, Zoology.
+- Scorecard: section-wise marks, accuracy %, +4/−1 marking scheme, full solution review.
+
+### 📊 Analytics Dashboard — EffortDNA + Score Predictor
+- KPI cards: Total Answered, Platform Accuracy, Study Streak, Predicted NEET Score (out of 720).
+- Subject mastery bars + 7-day streak heatmap.
+- EffortDNA card: speed distribution, pacing grade, per-subject benchmarks.
+
+### 📖 NCERT Reader — 3 Viewing Modes
+- **📖 NCERT Book**: Verbatim textbook sheet with running head, typography, and paragraph anchors.
+- **📄 PDF Canvas**: Mozilla PDF.js v3.11.174 native canvas rendering with zoom and coordinate overlay.
+- **🌐 Embed**: NCERT PDF iframe with Google Drive mirror fallback. 3-state cycle via mode button.
+
+---
+
+## [v1.5.0] — 2026-09-08 — Google Drive PDF Mirror Integration
+
+- Added `DRIVE` constant with verified Google Drive file IDs for all 79 chapters.
+- PDF split-screen now cycles: Drive Embed → Native NCERT PDF → Google Viewer.
+- Chapter page load automatically selects the optimal available PDF source.
+- Drive IDs sourced from Tiwari Academy NCERT books index (2026-27 rationalised edition).
+
+---
+
+## [v1.0.0] — 2026-09-08 — Initial Platform Launch
+
+### Core Architecture
+- Single-file PWA (`index.html` + `styles.css` + `sw.js`): zero dependencies, zero build step.
+- Client router with hash-free navigation via `navigate(page, args)`.
+- All persistence in `localStorage`: progress, mistakes, starred, CBT history, flashcard SRS states.
+- Web Audio API synthesizer: click, correct-answer, and marker-pen sounds — zero audio files.
+
+### Initial Content (6 Books)
+- Biology XI (19 chapters), Biology XII (13 chapters).
+- Chemistry XI Part 1 (6 chapters), Chemistry XI Part 2 (3 chapters).
+- Chemistry XII Part 1 (5 chapters), Chemistry XII Part 2 (5 chapters).
+- `data/pyq.json`: 810 real PYQs from NEET & JEE Main (2010–2025).
+- `data/formulas.json`: 60 formula reference cards (Physics XI/XII, Chemistry, Biology).
+
+### Core Features Shipped
+- Authentic split-view NCERT reader with verbatim textbook paragraphs and concept anchors.
+- Sentence-level golden Stabilo marker pen (contextual relevance scoring algorithm).
+- Exam pattern filters: Assertion-Reason, Statements I & II, Match-the-Columns, Standard MCQ.
+- Formula drawer (`Alt+F`) with real-time search.
+- Printable revision notes generator (`exportRevisionNotes()` with `@media print` CSS).
+- Quick Quiz (10-question cross-book drill).
+- SuperMemo SM-2 Flashcards deck.
+- Mistakes Notebook + Starred Questions.
+- Global Omnisearch (`Ctrl+K`).
+- PWA manifest (`manifest.json`) + Service Worker (`sw.js`) offline caching.
+- Dark / Light / OLED / Sepia theme system.
+- Keyboard shortcuts: `1-4`/`A-D` (options), `H` (hint), `S` (star), `Space` (flip card).
