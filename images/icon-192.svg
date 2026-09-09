@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#d9381e"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="42" fill="url(#g)"/>
+  <!-- Open Book & Star -->
+  <path d="M42 66 C42 66, 68 60, 96 74 C124 60, 150 66, 150 66 L150 136 C150 136, 124 130, 96 144 C68 130, 42 136, 42 136 Z" fill="#ffffff" fill-opacity="0.95"/>
+  <path d="M96 74 L96 144" stroke="#d9381e" stroke-width="4" stroke-linecap="round"/>
+  <!-- P Lettermark inside -->
+  <circle cx="96" cy="46" r="14" fill="#ffffff"/>
+  <path d="M93 40 L93 52 M93 40 L98 40 C101 40 103 42 103 45 C103 48 101 50 98 50 L93 50" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

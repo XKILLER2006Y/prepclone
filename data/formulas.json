@@ -1,0 +1,424 @@
+{
+  "physics-11": [
+    {
+      "chapter": "Motion in a Straight Line & Plane",
+      "topic": "Kinematics",
+      "formulas": [
+        {
+          "name": "Equations of Uniform Motion",
+          "latex": "v = u + at,   s = ut + \u00bd at\u00b2,   v\u00b2 = u\u00b2 + 2as",
+          "desc": "Valid only for constant acceleration along a straight line."
+        },
+        {
+          "name": "Displacement in n-th second",
+          "latex": "s_n = u + \u00bd a (2n \u2212 1)",
+          "desc": "Distance traveled between t = n\u22121 and t = n seconds."
+        },
+        {
+          "name": "Projectile Maximum Height",
+          "latex": "H = (u\u00b2 sin\u00b2\u03b8) / (2g)",
+          "desc": "Peak altitude in parabolic trajectory without air drag."
+        },
+        {
+          "name": "Horizontal Range",
+          "latex": "R = (u\u00b2 sin 2\u03b8) / g",
+          "desc": "Maximum range occurs at \u03b8 = 45\u00b0, where R_max = u\u00b2 / g."
+        },
+        {
+          "name": "Time of Flight",
+          "latex": "T = (2u sin \u03b8) / g",
+          "desc": "Total time aloft from launch until return to launch height."
+        }
+      ]
+    },
+    {
+      "chapter": "Laws of Motion",
+      "topic": "Dynamics & Friction",
+      "formulas": [
+        {
+          "name": "Newton's Second Law",
+          "latex": "F_net = dp/dt = m \u00b7 a",
+          "desc": "SI Unit: Newton (N) = kg m s\u207b\u00b2. Momentum p = m\u00b7v."
+        },
+        {
+          "name": "Limiting Static Friction",
+          "latex": "f_s(max) = \u03bc_s N",
+          "desc": "Always opposes impending relative motion; \u03bc_s > \u03bc_k."
+        },
+        {
+          "name": "Kinetic Friction",
+          "latex": "f_k = \u03bc_k N",
+          "desc": "Constant opposing friction during active relative sliding."
+        },
+        {
+          "name": "Optimum Banking Angle",
+          "latex": "tan \u03b8 = v\u00b2 / (r \u00b7 g)",
+          "desc": "Angle where normal force alone provides required centripetal acceleration."
+        },
+        {
+          "name": "Maximum Safe Speed on Banked Road",
+          "latex": "v_max = \u221a[ r\u00b7g \u00b7 (\u03bc + tan \u03b8) / (1 \u2212 \u03bc tan \u03b8) ]",
+          "desc": "Highest speed before vehicle slips outwards."
+        }
+      ]
+    },
+    {
+      "chapter": "Work, Energy and Power",
+      "topic": "Work-Energy Theorem",
+      "formulas": [
+        {
+          "name": "Work-Energy Theorem",
+          "latex": "W_net = \u0394K = \u00bd m v_f\u00b2 \u2212 \u00bd m v_i\u00b2",
+          "desc": "Work done by ALL forces equals the total change in kinetic energy."
+        },
+        {
+          "name": "Potential Energy of Spring",
+          "latex": "U_s = \u00bd k x\u00b2",
+          "desc": "Hooke's restoring force: F = \u2212k x."
+        },
+        {
+          "name": "Instantaneous Power",
+          "latex": "P = dW/dt = F \u00b7 v = F v cos \u03b8",
+          "desc": "SI unit: Watt (W) = J s\u207b\u00b9. 1 horsepower (hp) = 746 W."
+        }
+      ]
+    },
+    {
+      "chapter": "Gravitation",
+      "topic": "Orbital Dynamics",
+      "formulas": [
+        {
+          "name": "Universal Gravitation",
+          "latex": "F = G \u00b7 (m\u2081 m\u2082) / r\u00b2",
+          "desc": "G = 6.674 \u00d7 10\u207b\u00b9\u00b9 N m\u00b2 kg\u207b\u00b2."
+        },
+        {
+          "name": "Acceleration due to Gravity",
+          "latex": "g = GM / R\u00b2",
+          "desc": "At depth d: g(d) = g(1 \u2212 d/R). At height h \u226a R: g(h) = g(1 \u2212 2h/R)."
+        },
+        {
+          "name": "Escape Velocity",
+          "latex": "v_e = \u221a(2GM / R) = \u221a(2gR) \u2248 11.2 km/s",
+          "desc": "Independent of projectile mass and projection angle."
+        },
+        {
+          "name": "Orbital Velocity",
+          "latex": "v_o = \u221a(GM / R) = v_e / \u221a2 \u2248 7.92 km/s",
+          "desc": "Speed for stable low Earth circular orbit."
+        },
+        {
+          "name": "Kepler's Third Law",
+          "latex": "T\u00b2 = (4\u03c0\u00b2 / GM) \u00b7 a\u00b3  \u221d  a\u00b3",
+          "desc": "Square of orbital period is proportional to cube of semi-major axis."
+        }
+      ]
+    },
+    {
+      "chapter": "Thermodynamics",
+      "topic": "First & Second Laws",
+      "formulas": [
+        {
+          "name": "First Law of Thermodynamics",
+          "latex": "\u0394Q = \u0394U + \u0394W = n C_v \u0394T + P \u0394V",
+          "desc": "Conservation of energy for closed thermodynamic system."
+        },
+        {
+          "name": "Isothermal Work Done",
+          "latex": "W_iso = nRT ln(V\u2082 / V\u2081) = 2.303 nRT log\u2081\u2080(P\u2081 / P\u2082)",
+          "desc": "Isothermal process: temperature constant, \u0394U = 0."
+        },
+        {
+          "name": "Adiabatic Equation",
+          "latex": "PV^\u03b3 = const,   TV^(\u03b3\u22121) = const,   W = nR(T\u2081 \u2212 T\u2082) / (\u03b3 \u2212 1)",
+          "desc": "\u03b3 = C_p / C_v. Monoatomic gas = 5/3, Diatomic gas = 7/5."
+        },
+        {
+          "name": "Carnot Engine Efficiency",
+          "latex": "\u03b7 = 1 \u2212 (T_L / T_H) = W / Q_H",
+          "desc": "Temperatures T_L and T_H must strictly be in Kelvin (K)."
+        }
+      ]
+    },
+    {
+      "chapter": "Oscillations & Waves",
+      "topic": "Simple Harmonic Motion",
+      "formulas": [
+        {
+          "name": "Simple Pendulum Period",
+          "latex": "T = 2\u03c0 \u221a(L / g)",
+          "desc": "Independent of bob mass for small angular amplitudes."
+        },
+        {
+          "name": "Spring-Mass Oscillator",
+          "latex": "T = 2\u03c0 \u221a(m / k),   \u03c9 = \u221a(k / m)",
+          "desc": "Total mechanical energy E = \u00bd k A\u00b2 is strictly conserved."
+        }
+      ]
+    }
+  ],
+  "physics-12": [
+    {
+      "chapter": "Electric Charges & Fields",
+      "topic": "Coulomb's Law & Gauss Theorem",
+      "formulas": [
+        {
+          "name": "Coulomb's Law",
+          "latex": "F = (1 / 4\u03c0\u03b5\u2080) \u00b7 (|q\u2081 q\u2082| / r\u00b2)",
+          "desc": "1 / (4\u03c0\u03b5\u2080) = 8.99 \u00d7 10\u2079 N m\u00b2 C\u207b\u00b2."
+        },
+        {
+          "name": "Electric Dipole on Axial Line",
+          "latex": "E_axial = (1 / 4\u03c0\u03b5\u2080) \u00b7 (2p / r\u00b3)",
+          "desc": "r \u226b 2a. Directed along dipole moment p = 2qa."
+        },
+        {
+          "name": "Electric Dipole on Equatorial Line",
+          "latex": "E_eq = (1 / 4\u03c0\u03b5\u2080) \u00b7 (p / r\u00b3)",
+          "desc": "E_axial = 2 \u00b7 E_equatorial at identical distances."
+        },
+        {
+          "name": "Gauss's Law",
+          "latex": "\u03a6_E = \u222e E \u00b7 dA = q_enclosed / \u03b5\u2080",
+          "desc": "Total electric flux depends only on net enclosed charge."
+        }
+      ]
+    },
+    {
+      "chapter": "Electrostatic Potential & Capacitance",
+      "topic": "Capacitors",
+      "formulas": [
+        {
+          "name": "Parallel Plate Capacitance",
+          "latex": "C = K \u03b5\u2080 A / d",
+          "desc": "With dielectric slab of constant K filling the plate gap."
+        },
+        {
+          "name": "Electrostatic Energy Stored",
+          "latex": "U = \u00bd C V\u00b2 = Q\u00b2 / (2C) = \u00bd Q V",
+          "desc": "Energy density u = \u00bd \u03b5\u2080 E\u00b2."
+        }
+      ]
+    },
+    {
+      "chapter": "Current Electricity",
+      "topic": "Circuits & Drift Velocity",
+      "formulas": [
+        {
+          "name": "Drift Velocity & Current",
+          "latex": "I = n e A v_d,   v_d = (e E \u03c4) / m",
+          "desc": "\u03c4 is the mean relaxation time between lattice collisions."
+        },
+        {
+          "name": "Temperature Coefficient of Resistance",
+          "latex": "R_T = R\u2080 (1 + \u03b1 \u0394T)",
+          "desc": "\u03b1 > 0 for metallic conductors, \u03b1 < 0 for semiconductors."
+        },
+        {
+          "name": "Balanced Wheatstone Bridge",
+          "latex": "P / Q = R / S  \u27f9  I_G = 0",
+          "desc": "Zero current flows through galvanometer when bridge is balanced."
+        }
+      ]
+    },
+    {
+      "chapter": "Ray & Wave Optics",
+      "topic": "Optics & Interference",
+      "formulas": [
+        {
+          "name": "Lens Maker's Formula",
+          "latex": "1/f = (n \u2212 1) \u00b7 (1/R\u2081 \u2212 1/R\u2082)",
+          "desc": "Strictly follow Cartesian sign conventions."
+        },
+        {
+          "name": "Young's Double Slit Fringe Width",
+          "latex": "\u03b2 = \u03bb D / d",
+          "desc": "Angular fringe width \u03b8 = \u03bb / d."
+        }
+      ]
+    },
+    {
+      "chapter": "Dual Nature & Modern Physics",
+      "topic": "Quantum & Nuclear Physics",
+      "formulas": [
+        {
+          "name": "Einstein's Photoelectric Equation",
+          "latex": "h \u03bd = \u03a6\u2080 + K_max = h \u03bd\u2080 + e V\u2080",
+          "desc": "V\u2080 is stopping potential; h = 6.626 \u00d7 10\u207b\u00b3\u2074 J s."
+        },
+        {
+          "name": "de Broglie Wavelength",
+          "latex": "\u03bb = h / p = h / \u221a(2m e V) \u2248 1.227 / \u221aV  nm",
+          "desc": "For an electron accelerated through potential difference V."
+        },
+        {
+          "name": "Bohr Orbit Radius & Energy",
+          "latex": "r_n = 0.529 \u00b7 (n\u00b2 / Z)  \u00c5,   E_n = \u221213.6 \u00b7 (Z\u00b2 / n\u00b2)  eV",
+          "desc": "Ground state ionization energy of hydrogen is 13.6 eV."
+        },
+        {
+          "name": "Radioactive Decay Law",
+          "latex": "N(t) = N\u2080 e^(\u2212\u03bb t),   T_(1/2) = ln 2 / \u03bb \u2248 0.693 / \u03bb",
+          "desc": "Mean lifetime \u03c4 = 1 / \u03bb = 1.44 \u00b7 T_(1/2)."
+        }
+      ]
+    }
+  ],
+  "chemistry": [
+    {
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Mole & Stoichiometry",
+      "formulas": [
+        {
+          "name": "Molarity (M)",
+          "latex": "M = (Moles of solute) / V_solution(L) = (w \u00d7 1000) / (M_wt \u00d7 V_mL)",
+          "desc": "Temperature-dependent concentration unit."
+        },
+        {
+          "name": "Molality (m)",
+          "latex": "m = (Moles of solute) / W_solvent(kg) = (w \u00d7 1000) / (M_wt \u00d7 W_g)",
+          "desc": "Temperature-independent concentration unit."
+        },
+        {
+          "name": "Mole Fraction (x)",
+          "latex": "x_A = n_A / (n_A + n_B),   \u2211 x_i = 1",
+          "desc": "Dimensionless mole ratio."
+        }
+      ]
+    },
+    {
+      "chapter": "Thermodynamics & Equilibrium",
+      "topic": "Gibbs Energy & Equilibrium",
+      "formulas": [
+        {
+          "name": "Gibbs Free Energy",
+          "latex": "\u0394G = \u0394H \u2212 T \u0394S",
+          "desc": "\u0394G < 0: Spontaneous; \u0394G = 0: Equilibrium; \u0394G > 0: Non-spontaneous."
+        },
+        {
+          "name": "Standard Cell Potential & Equilibrium",
+          "latex": "\u0394G\u00b0 = \u2212RT ln K_eq = \u22122.303 RT log\u2081\u2080 K_eq = \u2212n F E\u00b0_cell",
+          "desc": "F = 96,485 C mol\u207b\u00b9."
+        },
+        {
+          "name": "Henderson-Hasselbalch Equation",
+          "latex": "pH = pK_a + log\u2081\u2080( [Conjugate Base] / [Acid] )",
+          "desc": "Buffer capacity is maximized when [salt] = [acid] (pH = pKa)."
+        }
+      ]
+    },
+    {
+      "chapter": "Solutions & Colligative Properties",
+      "topic": "Colligative Laws",
+      "formulas": [
+        {
+          "name": "Relative Lowering of Vapour Pressure",
+          "latex": "(P\u00b0 \u2212 P_s) / P\u00b0 = i \u00b7 x_B",
+          "desc": "Raoult's law for non-volatile solute."
+        },
+        {
+          "name": "Boiling Point Elevation & Freezing Depression",
+          "latex": "\u0394T_b = i \u00b7 K_b \u00b7 m,   \u0394T_f = i \u00b7 K_f \u00b7 m",
+          "desc": "K_b = molal ebullioscopic constant; K_f = cryoscopic constant."
+        },
+        {
+          "name": "Osmotic Pressure",
+          "latex": "\u03a0 = i \u00b7 C \u00b7 R \u00b7 T",
+          "desc": "Accurate method to determine molar mass of polymers and proteins."
+        },
+        {
+          "name": "Van 't Hoff Factor",
+          "latex": "i = 1 + (n \u2212 1)\u03b1  (dissociation),   i = 1 \u2212 (1 \u2212 1/n)\u03b1  (association)",
+          "desc": "\u03b1 is degree of dissociation or association."
+        }
+      ]
+    },
+    {
+      "chapter": "Electrochemistry",
+      "topic": "Nernst Equation",
+      "formulas": [
+        {
+          "name": "Nernst Equation at 298 K",
+          "latex": "E_cell = E\u00b0_cell \u2212 (0.0591 / n) \u00b7 log\u2081\u2080 Q",
+          "desc": "At equilibrium Q = K_eq and E_cell = 0."
+        },
+        {
+          "name": "Kohlrausch's Law",
+          "latex": "\u039b\u00b0_m = \u03bd\u208a \u03bb\u00b0\u208a + \u03bd\u208b \u03bb\u00b0\u208b",
+          "desc": "Molar conductivity at infinite dilution is additive."
+        }
+      ]
+    },
+    {
+      "chapter": "Chemical Kinetics",
+      "topic": "Rate Equations",
+      "formulas": [
+        {
+          "name": "First Order Rate Constant",
+          "latex": "k = (2.303 / t) \u00b7 log\u2081\u2080([A]\u2080 / [A]_t),   t_(1/2) = 0.693 / k",
+          "desc": "Half-life of 1st-order reaction is independent of initial concentration."
+        },
+        {
+          "name": "Arrhenius Activation Energy",
+          "latex": "log\u2081\u2080(k\u2082 / k\u2081) = (E_a / 2.303 R) \u00b7 [ (T\u2082 \u2212 T\u2081) / (T\u2081 T\u2082) ]",
+          "desc": "Rate roughly doubles for every 10\u00b0C temperature rise."
+        }
+      ]
+    }
+  ],
+  "biology": [
+    {
+      "chapter": "Diversity & Classification",
+      "topic": "Five Kingdoms (R.H. Whittaker 1969)",
+      "formulas": [
+        {
+          "name": "Classification Criteria",
+          "latex": "Cell Structure + Thallus + Nutrition + Reproduction + Phylogeny",
+          "desc": "5 Kingdoms: Monera (Prokaryotes), Protista, Fungi (Chitin wall), Plantae, Animalia."
+        }
+      ]
+    },
+    {
+      "chapter": "Genetics & Molecular Biology",
+      "topic": "Mendelian & Molecular Rules",
+      "formulas": [
+        {
+          "name": "Monohybrid Cross Ratios",
+          "latex": "Phenotypic = 3:1,   Genotypic = 1:2:1",
+          "desc": "F2 cross Tt \u00d7 Tt yields TT (1), Tt (2), tt (1)."
+        },
+        {
+          "name": "Dihybrid Cross Ratio",
+          "latex": "Phenotypic Ratio = 9:3:3:1",
+          "desc": "Demonstrates Mendel's Law of Independent Assortment."
+        },
+        {
+          "name": "Genetic Code Numbers",
+          "latex": "64 codons = 61 sense + 3 stop (UAA, UAG, UGA)",
+          "desc": "Initiation codon: AUG (codes for Methionine in eukaryotes)."
+        },
+        {
+          "name": "Chargaff's Equivalence Rule",
+          "latex": "[A] = [T],   [G] = [C]  \u27f9  ([A] + [G]) / ([T] + [C]) = 1",
+          "desc": "Valid strictly for double-stranded DNA (dsDNA)."
+        }
+      ]
+    },
+    {
+      "chapter": "Ecology & Evolution",
+      "topic": "Hardy-Weinberg & Energy Flow",
+      "formulas": [
+        {
+          "name": "Hardy-Weinberg Equilibrium",
+          "latex": "p\u00b2 + 2pq + q\u00b2 = 1,   p + q = 1",
+          "desc": "Allele frequencies remain constant in absence of evolutionary forces."
+        },
+        {
+          "name": "Lindeman's 10% Trophic Law",
+          "latex": "E_(n+1) = 0.10 \u00d7 E_n",
+          "desc": "Only ~10% of energy transfers between trophic levels; pyramid is always upright."
+        }
+      ]
+    }
+  ]
+}

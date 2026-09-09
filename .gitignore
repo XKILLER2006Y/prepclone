@@ -1,0 +1,7 @@
+*.log
+.DS_Store
+*.tmp
+__pycache__/
+*.pyc
+scrape.sh
+scripts/
