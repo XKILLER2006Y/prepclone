@@ -5,7 +5,7 @@
     "topic": "The International System of Units and Base Quantities",
     "questions": [
       {
-        "question": "Which of the following is NOT one of the seven base quantities in the SI system?",
+        "question": "Which of the following physical quantities is NOT considered one of the seven base quantities in the International System of Units (SI)?",
         "options": [
           "Thermodynamic Temperature",
           "Luminous Intensity",
@@ -13,9 +13,9 @@
           "Amount of Substance"
         ],
         "answer": "C",
-        "explanation": "In SI, Electric Current (ampere) is the base quantity, while Electric Charge (coulomb = A·s) is a derived quantity.",
+        "explanation": "In the SI system, Electric Current (ampere) is a base quantity. Electric Charge is a derived quantity, measured in coulombs (A·s).",
         "hint": "Recall that the SI base unit for electricity measures current, not charge.",
-        "difficulty": "Easy",
+        "difficulty": "Medium",
         "exam": [
           "NEET",
           "JEE"
@@ -24,12 +24,12 @@
         "ncertRef": "Page 1, Para 1"
       },
       {
-        "question": "The solid angle subtended at the centre of a sphere of radius r by a surface area equal to r² is defined as:",
+        "question": "In the SI system, what is the unit defined as the solid angle subtended at the centre of a sphere by a surface area equal to the square of its radius?",
         "options": [
-          "1 radian",
-          "1 steradian",
-          "π radians",
-          "4π steradians"
+          "Radian",
+          "Steradian",
+          "Degree",
+          "Revolution"
         ],
         "answer": "B",
         "explanation": "One steradian (sr) is the solid angle subtended at the centre of a sphere by that surface of the sphere which has an area equal to the square of its radius.",
@@ -39,11 +39,11 @@
           "NEET",
           "JEE"
         ],
-        "ncertPara": "1.3 Significant figures 1.4 Dimensions of physical quantities",
-        "ncertRef": "Page 1, Para 2"
+        "ncertPara": "Measurement of any physical quantity involves comparison with a certain basic, arbitrarily chosen, internationally accepted reference standard called unit. The result of a measurement of a physical quantity is expressed by a number (or numerical measure) accompanied by a unit. Although the number of physical quantities appears to be very large, we need only a limited number of units for expressing all the physical quantities, since they are interrelated with one another. The units for the fundamental or base quantities are called fundamental or base units. The units of all other physical quantities can be expressed as combinations of the base units. Such units obtained for the derived quantities are called derived units. A complete set of these units, both the base units and derived units, is known as the system of units. 1.2 THE INTERNATIONAL SYSTEM OF UNITS In earlier time scientists of different countries were using different systems of units for measurement. Three such systems, the CGS, the FPS (or British) system and the MKS system were in use extensively till recently. The base units for length, mass and time in these systems were as follows : · In CGS system they were centimetre, gram and second respectively. · In FPS system they were foot, pound and second respectively. · In MKS system they were metre, kilogram and second respectively. The system of units which is at present internationally accepted for measurement is the Système International d’ Unit é s (French for International System of Units), abbreviated as SI. The SI, with standard scheme of symbols, units and abbreviations, developed by the Bureau International des poids et mesures (The International Bureau of Weights and Measures, BIPM) in 1971 were recently revised by the General Conference on Weights and Measures in November 2018. The scheme is now for international usage",
+        "ncertRef": "Page 1, Para 1"
       },
       {
-        "question": "Which of the following pairs of physical quantities have the same dimensional formula?",
+        "question": "Which of the following pairs of physical quantities share the exact same dimensional formula?",
         "options": [
           "Torque and Work",
           "Stress and Strain",
@@ -59,10 +59,10 @@
           "JEE"
         ],
         "ncertPara": "Measurement of any physical quantity involves comparison with a certain basic, arbitrarily chosen, internationally accepted reference standard called unit. The result of a measurement of a physical quantity is expressed by a number (or numerical measure) accompanied by a unit. Although the number of physical quantities appears to be very large, we need only a limited number of units for expressing all the physical quantities, since they are interrelated with one another. The units for the fundamental or base quantities are called fundamental or base units. The units of all other physical quantities can be expressed as combinations of the base units. Such units obtained for the derived quantities are called derived units. A complete set of these units, both the base units and derived units, is known as the system of units. 1.2 THE INTERNATIONAL SYSTEM OF UNITS In earlier time scientists of different countries were using different systems of units for measurement. Three such systems, the CGS, the FPS (or British) system and the MKS system were in use extensively till recently. The base units for length, mass and time in these systems were as follows : · In CGS system they were centimetre, gram and second respectively. · In FPS system they were foot, pound and second respectively. · In MKS system they were metre, kilogram and second respectively. The system of units which is at present internationally accepted for measurement is the Système International d’ Unit é s (French for International System of Units), abbreviated as SI. The SI, with standard scheme of symbols, units and abbreviations, developed by the Bureau International des poids et mesures (The International Bureau of Weights and Measures, BIPM) in 1971 were recently revised by the General Conference on Weights and Measures in November 2018. The scheme is now for international usage",
-        "ncertRef": "Page 1, Para 3"
+        "ncertRef": "Page 1, Para 1"
       },
       {
-        "question": "A light year is a unit of:",
+        "question": "A 'light year' is a fundamental astronomical unit used to measure:",
         "options": [
           "Time",
           "Distance",
@@ -78,10 +78,10 @@
           "JEE"
         ],
         "ncertPara": "Measurement of any physical quantity involves comparison with a certain basic, arbitrarily chosen, internationally accepted reference standard called unit. The result of a measurement of a physical quantity is expressed by a number (or numerical measure) accompanied by a unit. Although the number of physical quantities appears to be very large, we need only a limited number of units for expressing all the physical quantities, since they are interrelated with one another. The units for the fundamental or base quantities are called fundamental or base units. The units of all other physical quantities can be expressed as combinations of the base units. Such units obtained for the derived quantities are called derived units. A complete set of these units, both the base units and derived units, is known as the system of units. 1.2 THE INTERNATIONAL SYSTEM OF UNITS In earlier time scientists of different countries were using different systems of units for measurement. Three such systems, the CGS, the FPS (or British) system and the MKS system were in use extensively till recently. The base units for length, mass and time in these systems were as follows : · In CGS system they were centimetre, gram and second respectively. · In FPS system they were foot, pound and second respectively. · In MKS system they were metre, kilogram and second respectively. The system of units which is at present internationally accepted for measurement is the Système International d’ Unit é s (French for International System of Units), abbreviated as SI. The SI, with standard scheme of symbols, units and abbreviations, developed by the Bureau International des poids et mesures (The International Bureau of Weights and Measures, BIPM) in 1971 were recently revised by the General Conference on Weights and Measures in November 2018. The scheme is now for international usage",
-        "ncertRef": "Page 1, Para 4"
+        "ncertRef": "Page 1, Para 1"
       },
       {
-        "question": "The SI prefix 'femto' corresponds to a multiplier of:",
+        "question": "In the SI system of units, the prefix 'femto' denotes a multiplicative factor of:",
         "options": [
           "10⁻¹²",
           "10⁻¹⁵",
@@ -96,8 +96,8 @@
           "NEET",
           "JEE"
         ],
-        "ncertPara": "1.1 Introduction 1.2 The international system of units",
-        "ncertRef": "Page 1, Para 5"
+        "ncertPara": "Measurement of any physical quantity involves comparison with a certain basic, arbitrarily chosen, internationally accepted reference standard called unit. The result of a measurement of a physical quantity is expressed by a number (or numerical measure) accompanied by a unit. Although the number of physical quantities appears to be very large, we need only a limited number of units for expressing all the physical quantities, since they are interrelated with one another. The units for the fundamental or base quantities are called fundamental or base units. The units of all other physical quantities can be expressed as combinations of the base units. Such units obtained for the derived quantities are called derived units. A complete set of these units, both the base units and derived units, is known as the system of units. 1.2 THE INTERNATIONAL SYSTEM OF UNITS In earlier time scientists of different countries were using different systems of units for measurement. Three such systems, the CGS, the FPS (or British) system and the MKS system were in use extensively till recently. The base units for length, mass and time in these systems were as follows : · In CGS system they were centimetre, gram and second respectively. · In FPS system they were foot, pound and second respectively. · In MKS system they were metre, kilogram and second respectively. The system of units which is at present internationally accepted for measurement is the Système International d’ Unit é s (French for International System of Units), abbreviated as SI. The SI, with standard scheme of symbols, units and abbreviations, developed by the Bureau International des poids et mesures (The International Bureau of Weights and Measures, BIPM) in 1971 were recently revised by the General Conference on Weights and Measures in November 2018. The scheme is now for international usage",
+        "ncertRef": "Page 1, Para 1"
       }
     ],
     "paragraphs": [

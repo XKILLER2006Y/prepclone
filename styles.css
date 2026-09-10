@@ -1,3 +1,9 @@
+
+/* Accessibility Focus */
+:focus-visible {
+  outline: 2px solid var(--accent-orange);
+  outline-offset: 2px;
+}
 :root {
   --bg-primary: #0d0d0d;
   --bg-secondary: #141414;
@@ -5,8 +11,8 @@
   --bg-hover: #222;
   --bg-nav: rgba(13,13,13,0.92);
   --text-primary: #f0f0f0;
-  --text-secondary: #999;
-  --text-muted: #666;
+  --text-secondary: #a3a3a3;
+  --text-muted: #7a7a7a;
   --accent-orange: #ff6b35;
   --accent-red: #e53935;
   --accent-green: #2e7d32;
@@ -22,8 +28,8 @@
   --bg-hover: #f0f0f0;
   --bg-nav: rgba(255,255,255,0.95);
   --text-primary: #1a1a1a;
-  --text-secondary: #666;
-  --text-muted: #999;
+  --text-secondary: #555555;
+  --text-muted: #757575;
   --border: #e0e0e0;
   --shadow: rgba(0,0,0,0.08);
 }
@@ -35,8 +41,8 @@
   --bg-hover: #171717;
   --bg-nav: rgba(0,0,0,0.96);
   --text-primary: #f5f5f5;
-  --text-secondary: #888;
-  --text-muted: #555;
+  --text-secondary: #a3a3a3;
+  --text-muted: #7a7a7a;
   --border: #1e1e1e;
   --shadow: rgba(0,0,0,0.8);
 }
@@ -48,8 +54,8 @@
   --bg-hover: #ede0bc;
   --bg-nav: rgba(251,240,217,0.96);
   --text-primary: #2d241e;
-  --text-secondary: #5c4e43;
-  --text-muted: #8c7b6f;
+  --text-secondary: #4a3e35;
+  --text-muted: #705f53;
   --accent-orange: #c85a17;
   --accent-red: #b72828;
   --accent-green: #2a682e;
@@ -800,8 +806,25 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 768px) {
   .hero h1 { font-size: 32px; }
   .books-grid { grid-template-columns: 1fr 1fr; }
-  .nav-links { display: none; }
+  .nav { height: auto; min-height: 60px; padding-bottom: 8px; }
+  .nav-inner { flex-wrap: wrap; padding: 8px 12px 0; gap: 8px; }
+  .nav-logo { flex: 1; min-width: 120px; }
+  .nav-right { flex: 1; justify-content: flex-end; }
+  .nav-links { 
+    display: flex; 
+    width: 100%; 
+    overflow-x: auto; 
+    padding: 4px 0; 
+    gap: 8px; 
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { white-space: nowrap; font-size: 13px; padding: 6px 12px; }
   .footer-inner { flex-direction: column; gap: 16px; }
+  .page-header, .quiz-container, .cbt-container { padding-top: 120px; }
+  .pdf-pane { top: 110px !important; }
+  #offline-bar { top: 100px !important; }
 }
 @media (max-width: 640px) {
   .nav-right { gap: 6px; }

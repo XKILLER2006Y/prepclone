@@ -4,7 +4,25 @@ All notable changes to PrepClone are documented in reverse-chronological order.
 
 ---
 
-## [v2.3.0] — 2026-09-10 — Maximum Exhaustive Bug Hunting & Optimizations Spree
+## [v2.4.0] — 2026-09-10 — Teamwork Optimization & Bug Hunt Spree
+- **Performance Profiling**:
+  - Added a 250ms debounce to the Omnisearch (`Ctrl+K`) input, preventing the main thread from locking up while searching 7,136+ questions on every keystroke.
+  - Refactored UI updates in the CBT Simulator and Quick Quiz. Selecting options now explicitly targets and mutates specific DOM nodes (score counters, palette buttons) instead of triggering full `render()` re-renders.
+  - Verified Web Audio API memory management is strictly correct with no lingering AudioContext nodes.
+- **Quality Assurance & Edge Cases**:
+  - Fixed an async race condition in `renderChapter()` where rapidly clicking between pages/chapters would result in a stale render overwriting newer UI state. Added a generation counter (`renderGen`) to cleanly abort stale renders.
+  - Fixed formula solvers (`solveCarnot`, `solveBuffer`) silently ignoring falsy `0` values for temperatures/concentrations. Explicit `undefined`/`NaN`/`""` checks now ensure `0` correctly triggers validation errors.
+  - Added new assertions to the Playwright test suite to verify the race condition fix and falsy solver inputs.
+- **Accessibility & UX**:
+  - Implemented full keyboard navigation (`Tab`, `Enter`, `Space`) across interactive `div`/`span` elements (book cards, chapter items, quiz options, search results) with custom `role="button"` and `tabindex="0"`.
+  - Added a global `:focus-visible` CSS rule for high-contrast focus rings (`--accent-orange`).
+  - Added `aria-label`, `aria-hidden`, and `aria-live` attributes to navigation buttons, emojis, and the main app container for improved screen reader support.
+  - Revamped the compact mobile header (`max-width: 768px`) to use horizontal scrolling (`overflow-x: auto`) for navigation links instead of hiding them via `display: none`.
+  - Tuned WCAG contrast ratios for `--text-muted` and `--text-secondary` across all 4 themes.
+
+---
+
+## [v2.3.0] — 2026-09-10 — Super Maximum Exhaustive Bug Hunting & Optimizations Spree
 
 ### 🐞 Critical Bug Fixes & Hardening
 - **Custom CBT Studio Launcher Crash Fixed**: Resolved `ReferenceError: startCbtTimer is not defined` by connecting to standard CBT interval timer mechanism `stopCbtTimer()` and `cbtTimer = setInterval(tickCbt, 1000)`.
@@ -19,7 +37,7 @@ All notable changes to PrepClone are documented in reverse-chronological order.
 
 ### 📱 Responsive Layout & Performance Optimizations
 - **Mobile Navbar Zero-Overflow (< 640px & < 480px)**: Wrapped navbar labels in `<span class="nav-btn-text">` and collapsed buttons into compact badges; concealed brand text on small screens to maintain crisp `P` logo and guarantee all 8 controls fit cleanly on screens down to 320px with zero horizontal scrolling.
-- **Offline Cache Bumped**: Updated Service Worker cache to `prepclone-v2.3.0` for seamless background cache refresh.
+- **Offline Cache Bumped**: Updated Service Worker cache to `prepclone-v2.4.0` for seamless background cache refresh.
 - **Automated Regression Suite Expansion**: Added 45-point comprehensive validation in `scratch/test_milestone8_features.js` (total 105 automated test assertions across 3 suites with 100% pass rate).
 
 ---

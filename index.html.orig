@@ -874,11 +874,9 @@ function filterBooks(filter, el) {
 }
 
 async function renderBook() {
-  const gen = ++renderGen;
   const app = document.getElementById('app');
   const book = BOOKS[currentBook];
   const data = await loadBookData(currentBook);
-  if (gen !== renderGen) return;
   const pyqs = await loadPyq();
   
   // Group pages by chapter
@@ -926,13 +924,10 @@ async function renderBook() {
   updateNav();
 }
 
-let renderGen = 0;
 async function renderChapter() {
-  const gen = ++renderGen;
   const app = document.getElementById('app');
   const book = BOOKS[currentBook];
   const data = await loadBookData(currentBook);
-  if (gen !== renderGen) return;
   
   // Get pages for this chapter
   const chapterPages = data.filter(d => d.chapter === currentChapter);
@@ -940,9 +935,7 @@ async function renderChapter() {
   const pageData = chapterPages.find(d => d.page === currentPageNum);
   const maxPage = chapterPages.length > 0 ? Math.max(...chapterPages.map(d => d.page)) : 1;
 
-  const pyqsFull = await loadPyq();
-  if (gen !== renderGen) return;
-  const pyqs = pyqsFull.filter(p => p.book === currentBook && p.chapter === currentChapter);
+  const pyqs = (await loadPyq()).filter(p => p.book === currentBook && p.chapter === currentChapter);
   window.currentChapterPyqs = pyqs;
 
   // Year breakdown computed live from the PYQ bank — no hardcoded numbers
@@ -5223,10 +5216,9 @@ function renderFormulaSolvers() {
 }
 
 function solveCarnot() {
-  const getVal = (id, def) => { const v = document.getElementById(id)?.value; return (v === undefined || v === "" || isNaN(v)) ? def : parseFloat(v); };
-  const th = getVal("sol-carnot-th", 500);
-  const tc = getVal("sol-carnot-tc", 300);
-  const qh = getVal("sol-carnot-qh", 1000);
+  const th = parseFloat(document.getElementById('sol-carnot-th')?.value) || 500;
+  const tc = parseFloat(document.getElementById('sol-carnot-tc')?.value) || 300;
+  const qh = parseFloat(document.getElementById('sol-carnot-qh')?.value) || 1000;
   const resEl = document.getElementById('res-carnot');
   if (!resEl) return;
   if (th <= 0 || tc <= 0) {
@@ -5251,10 +5243,9 @@ function solveCarnot() {
 }
 
 function solveCoulomb() {
-  const getVal = (id, def) => { const v = document.getElementById(id)?.value; return (v === undefined || v === "" || isNaN(v)) ? def : parseFloat(v); };
-  const q1 = getVal("sol-coulomb-q1", 2);
-  const q2 = getVal("sol-coulomb-q2", -3);
-  const r = getVal("sol-coulomb-r", 0.1);
+  const q1 = parseFloat(document.getElementById('sol-coulomb-q1')?.value) || 2;
+  const q2 = parseFloat(document.getElementById('sol-coulomb-q2')?.value) || -3;
+  const r = parseFloat(document.getElementById('sol-coulomb-r')?.value) || 0.1;
   const resEl = document.getElementById('res-coulomb');
   if (!resEl) return;
   if (r <= 0) {
@@ -5271,8 +5262,7 @@ function solveCoulomb() {
 }
 
 function solveDeBroglie() {
-  const getVal = (id, def) => { const v = document.getElementById(id)?.value; return (v === undefined || v === "" || isNaN(v)) ? def : parseFloat(v); };
-  const v = getVal("sol-debroglie-v", 100);
+  const v = parseFloat(document.getElementById('sol-debroglie-v')?.value) || 100;
   const resEl = document.getElementById('res-debroglie');
   if (!resEl) return;
   if (v <= 0) {
@@ -5288,10 +5278,9 @@ function solveDeBroglie() {
 }
 
 function solveDecay() {
-  const getVal = (id, def) => { const v = document.getElementById(id)?.value; return (v === undefined || v === "" || isNaN(v)) ? def : parseFloat(v); };
-  const n0 = getVal("sol-decay-n0", 1000);
-  const thalf = getVal("sol-decay-thalf", 5);
-  const t = getVal("sol-decay-t", 15);
+  const n0 = parseFloat(document.getElementById('sol-decay-n0')?.value) || 1000;
+  const thalf = parseFloat(document.getElementById('sol-decay-thalf')?.value) || 5;
+  const t = parseFloat(document.getElementById('sol-decay-t')?.value) || 15;
   const resEl = document.getElementById('res-decay');
   if (!resEl) return;
   if (n0 <= 0 || thalf <= 0 || t < 0) {
@@ -5308,10 +5297,9 @@ function solveDecay() {
 }
 
 function solveBuffer() {
-  const getVal = (id, def) => { const v = document.getElementById(id)?.value; return (v === undefined || v === "" || isNaN(v)) ? def : parseFloat(v); };
-  const pka = getVal("sol-buffer-pka", 4.76);
-  const salt = getVal("sol-buffer-salt", 0.1);
-  const acid = getVal("sol-buffer-acid", 0.1);
+  const pka = parseFloat(document.getElementById('sol-buffer-pka')?.value) || 4.76;
+  const salt = parseFloat(document.getElementById('sol-buffer-salt')?.value) || 0.1;
+  const acid = parseFloat(document.getElementById('sol-buffer-acid')?.value) || 0.1;
   const resEl = document.getElementById('res-buffer');
   if (!resEl) return;
   if (salt <= 0 || acid <= 0) {
@@ -5327,8 +5315,7 @@ function solveBuffer() {
 }
 
 function solveHardyWeinberg() {
-  const getVal = (id, def) => { const v = document.getElementById(id)?.value; return (v === undefined || v === "" || isNaN(v)) ? def : parseFloat(v); };
-  const q2 = getVal("sol-hw-q2", 0.04);
+  const q2 = parseFloat(document.getElementById('sol-hw-q2')?.value) || 0.04;
   const resEl = document.getElementById('res-hw');
   if (!resEl) return;
   if (q2 < 0 || q2 > 1) {
