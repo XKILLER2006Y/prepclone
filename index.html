@@ -32,6 +32,15 @@
       <a href="#" onclick="navigate('pyqs')" data-nav="pyqs">PYQs</a>
     </div>
     <div class="nav-right">
+      <div class="daily-goal-pill" id="dailyGoalPill" onclick="openDailyGoalModal()" title="Daily MCQ Target">
+        <span>🎯</span> <span id="dailyGoalDisplay">0/50</span>
+      </div>
+      <button class="btn-focus-mode" id="btnFocusMode" onclick="toggleFocusModal()" title="Binaural Beats & Pomodoro Study Audio">
+        <span>🎧</span> Focus
+      </button>
+      <button class="btn-tool-sync" onclick="openSyncModal()" title="Cross-Device Profile Sync & Backup">
+        <span>☁️</span> Sync
+      </button>
       <button class="btn-tool-formula" onclick="toggleFormulaDrawer()" title="NCERT Formulas, Laws & Units (Alt+F)">
         <span>⚡</span> Formulas <span class="search-key-badge" style="background:rgba(255,107,53,0.25);color:inherit">Alt F</span>
       </button>
@@ -45,11 +54,15 @@
 </nav>
 
 <div id="offline-bar" style="display:none;background:var(--accent-orange);color:#fff;text-align:center;padding:6px 12px;font-size:12.5px;font-weight:700;position:sticky;top:60px;z-index:99">
-  ⚡ Offline Mode Active — All 2,785 Questions & NCERT Textbook Content Available Offline
+  ⚡ Offline Mode Active — All 7,136 Questions & 1,690 NCERT Textbook Pages Available Offline
 </div>
 
 <div id="omnisearch-wrap" style="display:none"></div>
 <div id="formula-drawer-wrap"></div>
+<div id="sync-modal-wrap" style="display:none"></div>
+<div id="focus-modal-wrap" style="display:none"></div>
+<div id="daily-goal-modal-wrap" style="display:none"></div>
+<canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999999;display:none"></canvas>
 
 <div id="app"></div>
 
@@ -1014,15 +1027,44 @@ async function renderChapter() {
                 const matchedQ = pageData?.questions?.[qidx];
                 const pyqYearTag = matchedQ?.year ? `NEET '${String(matchedQ.year).slice(-2)}` : (matchedQ?.exam?.length ? matchedQ.exam[0] : (p.paraNum % 2 === 0 ? `NEET '${20 + (p.paraNum % 5)}` : ''));
                 return `
-                <div class="ncert-para" id="ncert-para-${qId}" data-qidx="${qidx}" onclick="focusQuestionCard('${qId}')" title="Click to focus Question ${p.paraNum || (pi + 1)}">
-                  <div class="ncert-para-meta">
-                    <span class="ncert-para-num">¶ ${p.paraNum || (pi + 1)}</span>
-                    <span class="ncert-para-anchor">🎯 Question ${p.paraNum || (pi + 1)} Concept Anchor</span>
-                    ${p.keyTerm ? `<span class="ncert-para-keyterm">${p.keyTerm}</span>` : ''}
-                    ${pyqYearTag ? `<span class="pyq-inline-pill" onclick="event.stopPropagation(); focusQuestionFromTextbook('${qId}')" title="Appeared in ${pyqYearTag} — Click to focus question">🎯 ${pyqYearTag}</span>` : ''}
+                ${(() => {
+                  const existingNote = getParagraphNote(qId);
+                  return `
+                  <div class="ncert-para" id="ncert-para-${qId}" data-qidx="${qidx}" onclick="focusQuestionCard('${qId}')" title="Click to focus Question ${p.paraNum || (pi + 1)}">
+                    <div class="ncert-para-meta">
+                      <span class="ncert-para-num">¶ ${p.paraNum || (pi + 1)}</span>
+                      <span class="ncert-para-anchor">🎯 Question ${p.paraNum || (pi + 1)} Concept Anchor</span>
+                      ${p.keyTerm ? `<span class="ncert-para-keyterm">${p.keyTerm}</span>` : ''}
+                      ${pyqYearTag ? `<span class="pyq-inline-pill" onclick="event.stopPropagation(); focusQuestionFromTextbook('${qId}')" title="Appeared in ${pyqYearTag} — Click to focus question">🎯 ${pyqYearTag}</span>` : ''}
+                      <button class="ncert-note-btn ${existingNote ? 'has-note' : ''}" onclick="event.stopPropagation(); toggleParaNoteEditor('${qId}')" title="${existingNote ? 'View/Edit Note' : 'Add Note to this paragraph'}">
+                        ✏️ ${existingNote ? 'Note Attached' : 'Note'}
+                      </button>
+                    </div>
+                    <p class="ncert-para-text">${p.text}</p>
+
+                    ${existingNote ? `
+                      <div class="ncert-sticky-note-card" id="note-card-${qId}">
+                        <div class="nsn-header">
+                          <span>📝 Personal Note</span>
+                          <span style="font-size:10.5px;opacity:0.8">${new Date(existingNote.updatedAt || Date.now()).toLocaleDateString()}</span>
+                        </div>
+                        <div class="nsn-content">${escapeHtml(existingNote.content)}</div>
+                        <div class="nsn-actions">
+                          <button class="nsn-btn" onclick="event.stopPropagation(); editParaNote('${qId}')">Edit</button>
+                          <button class="nsn-btn" style="color:#ef4444" onclick="event.stopPropagation(); removeParaNote('${qId}')">Delete</button>
+                        </div>
+                      </div>
+                    ` : ''}
+
+                    <div id="note-editor-${qId}" class="ncert-note-editor" style="display:none" onclick="event.stopPropagation()">
+                      <textarea class="note-textarea" id="note-textarea-${qId}" placeholder="Write personal note, mnemonic, or tricky concept anchor for this paragraph...">${existingNote ? escapeHtml(existingNote.content) : ''}</textarea>
+                      <div style="display:flex;gap:8px;justify-content:flex-end">
+                        <button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="cancelParaNoteEditor('${qId}')">Cancel</button>
+                        <button class="btn-primary" style="padding:4px 12px;font-size:12px" onclick="saveParaNoteFromEditor('${qId}', '${escapeHtml((p.text || '').slice(0, 100))}', ${p.paraNum || (pi + 1)})">Save Note</button>
+                      </div>
+                    </div>
                   </div>
-                  <p class="ncert-para-text">${p.text}</p>
-                </div>
+                `})()}
               `;}).join('') || '<p style="color:var(--text-muted)">No textbook content available for this page.</p>'}
             </div>
 
@@ -1580,6 +1622,7 @@ function selectAnswer(qid, idx, correct) {
   }
   playTone(isCorrect ? 'correct' : 'click');
   recordStudyActivity();
+  recordDailyGoalAttempt();
   updatePageProgress();
 }
 
@@ -2006,6 +2049,57 @@ function renderMixQuizSetup() {
           <p>Drill directly on the questions you previously got wrong. Overcome misconceptions and master weak concepts.</p>
           <button class="btn-secondary" onclick="startMistakesQuiz()" ${mistakesCount === 0 ? 'disabled style="opacity:0.5"' : ''}>
             ${mistakesCount > 0 ? `Practice ${mistakesCount} Mistakes ➔` : 'No Mistakes Yet'}
+          </button>
+        </div>
+      </div>
+
+      <!-- Custom CBT Studio -->
+      <div class="custom-cbt-box">
+        <div class="custom-cbt-header">
+          <div class="custom-cbt-title">
+            <span>🛠️</span> Custom Test Studio & Weak-Chapter Drill
+          </div>
+          <span style="font-size:12px;color:var(--text-muted)">Configure your custom test parameters</span>
+        </div>
+        <div class="custom-cbt-grid">
+          <div class="custom-cbt-field">
+            <div class="custom-cbt-label">1. Select Target Subjects</div>
+            <div class="custom-chip-row" id="customSubjChips">
+              <button class="c-chip active" data-val="physics" onclick="this.classList.toggle('active')">⚛️ Physics</button>
+              <button class="c-chip active" data-val="chemistry" onclick="this.classList.toggle('active')">⚗️ Chemistry</button>
+              <button class="c-chip active" data-val="botany" onclick="this.classList.toggle('active')">🌿 Botany</button>
+              <button class="c-chip active" data-val="zoology" onclick="this.classList.toggle('active')">🐾 Zoology</button>
+            </div>
+          </div>
+          <div class="custom-cbt-field">
+            <div class="custom-cbt-label">2. Question Focus Mode</div>
+            <div class="custom-chip-row" id="customFocusChips">
+              <button class="c-chip active" data-val="all" onclick="selectSingleChip(this, '#customFocusChips')">All NCERT Topics</button>
+              <button class="c-chip" data-val="weak" onclick="selectSingleChip(this, '#customFocusChips')">🎯 Target Weak Areas</button>
+              <button class="c-chip" data-val="pyq" onclick="selectSingleChip(this, '#customFocusChips')">⭐ PYQs Only (2010–2025)</button>
+            </div>
+          </div>
+          <div class="custom-cbt-field">
+            <div class="custom-cbt-label">3. Question Count</div>
+            <div class="custom-chip-row" id="customCountChips">
+              <button class="c-chip" data-val="15" onclick="selectSingleChip(this, '#customCountChips')">15 Qs</button>
+              <button class="c-chip" data-val="30" onclick="selectSingleChip(this, '#customCountChips')">30 Qs</button>
+              <button class="c-chip active" data-val="45" onclick="selectSingleChip(this, '#customCountChips')">45 Qs</button>
+              <button class="c-chip" data-val="90" onclick="selectSingleChip(this, '#customCountChips')">90 Qs</button>
+              <button class="c-chip" data-val="180" onclick="selectSingleChip(this, '#customCountChips')">180 Qs</button>
+            </div>
+          </div>
+          <div class="custom-cbt-field">
+            <div class="custom-cbt-label">4. Timer Mode</div>
+            <div class="custom-chip-row" id="customTimerChips">
+              <button class="c-chip active" data-val="timed" onclick="selectSingleChip(this, '#customTimerChips')">⏱ Timed (1 min/Q)</button>
+              <button class="c-chip" data-val="untimed" onclick="selectSingleChip(this, '#customTimerChips')">♾️ Untimed Practice</button>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn-primary" style="padding:12px 24px;font-size:15px;font-weight:700" onclick="launchCustomCbtFromStudio()">
+            🚀 Generate & Start Custom CBT Test ➔
           </button>
         </div>
       </div>
@@ -2635,6 +2729,9 @@ function renderNotebook() {
         <p>Targeted revision for exam mastery. Incorrect answers are automatically logged here so you can analyze misconceptions and drill them until mastered.</p>
       </div>
 
+      ${(() => {
+        const notesList = Object.values(getNotes());
+        return `
       <div class="notebook-stats-grid">
         <div class="nb-stat">
           <div class="nb-stat-num">${mistakesList.length}</div>
@@ -2645,12 +2742,17 @@ function renderNotebook() {
           <div class="nb-stat-label">Starred Questions</div>
         </div>
         <div class="nb-stat">
+          <div class="nb-stat-num" style="color:#f59e0b">${notesList.length}</div>
+          <div class="nb-stat-label">Personal Notes</div>
+        </div>
+        <div class="nb-stat">
           <div class="nb-stat-num" style="color:var(--accent-green)">
-            ${mistakesList.length + starredSet.size}
+            ${mistakesList.length + starredSet.size + notesList.length}
           </div>
-          <div class="nb-stat-label">Total Revision Items</div>
+          <div class="nb-stat-label">Total Revision Vault</div>
         </div>
       </div>
+      `;})()}
 
       <div class="notebook-bar">
         <div class="nb-tab-group">
@@ -2659,6 +2761,9 @@ function renderNotebook() {
           </button>
           <button class="nb-tab ${notebookTab === 'starred' ? 'active' : ''}" onclick="setNotebookTab('starred')">
             ★ Starred (${starredSet.size})
+          </button>
+          <button class="nb-tab ${notebookTab === 'notes' ? 'active' : ''}" onclick="setNotebookTab('notes')">
+            📝 My Notes (${Object.keys(getNotes()).length})
           </button>
         </div>
 
@@ -2752,7 +2857,7 @@ function renderNotebook() {
               </div>
             </div>`;
         }).join('')}
-      ` : `
+      ` : notebookTab === 'starred' ? `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
           <span style="font-size:13px;color:var(--text-secondary)">Showing ${filteredStarred.length} starred question${filteredStarred.length === 1 ? '' : 's'}</span>
         </div>
@@ -2798,6 +2903,63 @@ function renderNotebook() {
               </div>
             </div>`;
         }).join('')}
+      ` : `
+        ${(() => {
+          const allNotes = Object.values(getNotes());
+          const filteredNotes = allNotes.filter(item => {
+            if (notebookFilter === 'all') return true;
+            const b = (item.bookId || item.book || '').toLowerCase();
+            if (notebookFilter === 'physics') return b.includes('physics');
+            if (notebookFilter === 'chemistry') return b.includes('chem');
+            if (notebookFilter === 'biology') return b.includes('bio');
+            return true;
+          });
+
+          return `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+              <span style="font-size:13.5px;color:var(--text-secondary)">
+                Personal NCERT textbook annotations and study mnemonics (${filteredNotes.length} notes)
+              </span>
+              <div>
+                ${filteredNotes.length > 0 ? `
+                  <button class="btn-secondary" onclick="exportMyNotes()"><span style="margin-right:4px">🖨️</span> Export / Print Notes</button>
+                ` : ''}
+              </div>
+            </div>
+
+            ${filteredNotes.length === 0 ? `
+              <div class="step-card" style="text-align:center;padding:48px 24px">
+                <span style="font-size:48px">📝</span>
+                <h3 style="margin:12px 0 8px">No Notes in Log!</h3>
+                <p style="color:var(--text-secondary);max-width:500px;margin:0 auto 16px">
+                  Click the <b>✏️ Note</b> button beside any NCERT textbook paragraph while studying chapters to attach personal notes, teacher mnemonics, or tricky concepts.
+                </p>
+                <button class="btn-primary" onclick="navigate('books')">Browse Books & Study ➔</button>
+              </div>
+            ` : `
+              <div class="nb-notes-grid">
+                ${filteredNotes.map(n => `
+                  <div class="nb-note-item" id="nb-note-${n.id}">
+                    <div>
+                      <div class="nb-note-item-meta">
+                        <span><b>${n.bookTitle || n.bookId || 'NCERT Book'}</b> · Ch ${n.chapterIdx !== undefined ? n.chapterIdx + 1 : 1}, Pg ${n.pageNum || 1}</span>
+                        <span>${new Date(n.updatedAt || Date.now()).toLocaleDateString()}</span>
+                      </div>
+                      <div class="nb-note-item-para">"${escapeHtml((n.paraSnippet || '').slice(0, 140))}..."</div>
+                      <div class="nb-note-item-text">${escapeHtml(n.content)}</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border-color);padding-top:10px;margin-top:10px">
+                      <button class="btn-primary btn-sm" onclick="jumpToNoteParagraph('${n.bookId}', ${n.chapterIdx || 0}, ${n.pageNum || 1}, '${n.id}')">
+                        📖 Open in NCERT ➔
+                      </button>
+                      <button class="nsn-btn" style="color:#ef4444" onclick="removeParaNote('${n.id}')">Delete</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          `;
+        })()}
       `}
     </div>`;
 }
@@ -4261,11 +4423,15 @@ function renderFormulaDrawer(data) {
     <div class="formula-drawer" id="formulaDrawer">
       <div class="formula-drawer-header">
         <div class="fdh-title">
-          <span>⚡</span> NCERT Formulas & Equations
+          <span>⚡</span> NCERT Formulas & Solvers
         </div>
         <button class="fdh-close" onclick="toggleFormulaDrawer(false)" title="Close (Esc)">✕</button>
       </div>
-      <div class="formula-drawer-search">
+      <div class="fd-mode-switch">
+        <button class="fd-mode-btn ${formulaDrawerMode === 'reference' ? 'active' : ''}" onclick="switchFormulaDrawerMode('reference')">⚡ Reference Cards</button>
+        <button class="fd-mode-btn ${formulaDrawerMode === 'solver' ? 'active' : ''}" onclick="switchFormulaDrawerMode('solver')">🧮 Interactive Solvers (6)</button>
+      </div>
+      <div class="formula-drawer-search" id="formulaSearchWrap" style="${formulaDrawerMode === 'solver' ? 'display:none' : ''}">
         <input type="text" id="formulaSearchInput" class="formula-search-input" placeholder="Search laws, SI units, variables (e.g. Carnot, Nernst, Lens)..." oninput="filterFormulas(this.value)">
       </div>
       <div class="formula-drawer-tabs">
@@ -4276,7 +4442,7 @@ function renderFormulaDrawer(data) {
         <button class="fd-tab ${currentFormulaSubj === 'biology' ? 'active' : ''}" data-subj="biology" onclick="switchFormulaTab('biology', this)">Biology</button>
       </div>
       <div class="formula-drawer-content" id="formulaDrawerContent">
-        ${renderFormulaGroups(data, currentFormulaSubj, '')}
+        ${formulaDrawerMode === 'solver' ? renderFormulaSolvers() : renderFormulaGroups(data, currentFormulaSubj, '')}
       </div>
     </div>
   `;
@@ -4560,6 +4726,1216 @@ function toggleTheme() {
 const savedTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.setAttribute('data-theme', savedTheme);
 document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀' : '🌙';
+
+
+// ==========================================================================
+// MILESTONE 8: NOTES, CUSTOM CBT, FORMULA SOLVERS, SYNC HUB & FOCUS AUDIO
+// ==========================================================================
+
+// --- 1. INLINE NCERT PARAGRAPH NOTES ---
+function getNotes() {
+  try { return JSON.parse(localStorage.getItem('prepclone-notes') || '{}'); }
+  catch(e) { return {}; }
+}
+
+function getParagraphNote(qId) {
+  return getNotes()[qId] || null;
+}
+
+function saveNote(qId, content, meta) {
+  if (!content || !content.trim()) {
+    deleteNote(qId);
+    return;
+  }
+  const notes = getNotes();
+  notes[qId] = {
+    id: qId,
+    content: content.trim(),
+    bookId: currentBook || meta?.bookId || '',
+    bookTitle: (BOOKS[currentBook] || {}).title || meta?.bookTitle || 'NCERT Book',
+    chapterIdx: typeof currentChapter === 'number' ? currentChapter : meta?.chapterIdx || 0,
+    chapterTitle: (BOOKS[currentBook] || {}).chapters?.[currentChapter] || meta?.chapterTitle || 'Chapter',
+    pageNum: typeof currentPageNum === 'number' ? currentPageNum : meta?.pageNum || 1,
+    paraNum: meta?.paraNum || 1,
+    paraSnippet: meta?.paraSnippet || '',
+    updatedAt: Date.now()
+  };
+  localStorage.setItem('prepclone-notes', JSON.stringify(notes));
+  saveAutoSnapshot();
+}
+
+function deleteNote(qId) {
+  const notes = getNotes();
+  delete notes[qId];
+  localStorage.setItem('prepclone-notes', JSON.stringify(notes));
+}
+
+function toggleParaNoteEditor(qId) {
+  const ed = document.getElementById(`note-editor-${qId}`);
+  const card = document.getElementById(`note-card-${qId}`);
+  if (!ed) return;
+  const isHidden = (ed.style.display === 'none' || !ed.style.display);
+  ed.style.display = isHidden ? 'block' : 'none';
+  if (isHidden) {
+    if (card) card.style.display = 'none';
+    const ta = document.getElementById(`note-textarea-${qId}`);
+    if (ta) ta.focus();
+  } else {
+    if (card) card.style.display = 'block';
+  }
+}
+
+function saveParaNoteFromEditor(qId, paraSnippet, paraNum) {
+  const ta = document.getElementById(`note-textarea-${qId}`);
+  if (!ta) return;
+  const val = ta.value.trim();
+  saveNote(qId, val, { paraSnippet, paraNum });
+  renderChapter();
+}
+
+function cancelParaNoteEditor(qId) {
+  const ed = document.getElementById(`note-editor-${qId}`);
+  const card = document.getElementById(`note-card-${qId}`);
+  if (ed) ed.style.display = 'none';
+  if (card) card.style.display = 'block';
+}
+
+function editParaNote(qId) {
+  toggleParaNoteEditor(qId);
+}
+
+function removeParaNote(qId) {
+  if (confirm('Delete this personal note?')) {
+    deleteNote(qId);
+    if (currentPage === 'chapter') renderChapter();
+    else if (currentPage === 'notebook') render();
+  }
+}
+
+function jumpToNoteParagraph(bookId, chIdx, pageNum, qId) {
+  currentBook = bookId;
+  currentChapter = chIdx;
+  currentPageNum = pageNum;
+  currentPage = 'chapter';
+  renderChapter();
+  setTimeout(() => {
+    const el = document.getElementById(`ncert-para-${qId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.style.boxShadow = '0 0 0 3px #f59e0b';
+      setTimeout(() => { el.style.boxShadow = ''; }, 2500);
+    }
+  }, 100);
+}
+
+function exportMyNotes() {
+  const notes = Object.values(getNotes());
+  if (!notes.length) {
+    alert('No personal notes saved yet.');
+    return;
+  }
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Pop-up blocked. Please allow pop-ups to print notes.');
+    return;
+  }
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>PrepClone — My Personal NCERT Study Notes</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 32px; color: #111827; line-height: 1.5; max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 22px; margin-bottom: 4px; color: #b45309; }
+        .meta { font-size: 12px; color: #6b7280; margin-bottom: 24px; }
+        .note-block { border: 1px solid #fef3c7; background: #fffdf5; border-left: 4px solid #f59e0b; padding: 14px 18px; border-radius: 8px; margin-bottom: 16px; page-break-inside: avoid; }
+        .note-head { font-size: 12px; font-weight: 700; color: #92400e; margin-bottom: 6px; display: flex; justify-content: space-between; }
+        .note-para { font-size: 11.5px; color: #4b5563; font-style: italic; background: #fefce8; padding: 6px 10px; border-radius: 4px; margin-bottom: 8px; }
+        .note-body { font-size: 13.5px; font-weight: 500; color: #1f2937; white-space: pre-wrap; }
+        .btn-print { background: #ff6b35; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; margin-bottom: 20px; }
+        @media print { .btn-print { display: none; } body { padding: 0; } }
+      </style>
+    </head>
+    <body>
+      <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      <h1>📝 PrepClone — My NCERT Personal Notes</h1>
+      <div class="meta">Exported on ${new Date().toLocaleDateString()} · Total Notes: ${notes.length}</div>
+      ${notes.map(n => `
+        <div class="note-block">
+          <div class="note-head">
+            <span>${escapeHtml(n.bookTitle || 'NCERT Book')} · Ch ${n.chapterIdx + 1}: ${escapeHtml(n.chapterTitle || '')} (Page ${n.pageNum})</span>
+            <span>${new Date(n.updatedAt).toLocaleDateString()}</span>
+          </div>
+          <div class="note-para">"${escapeHtml(n.paraSnippet || '')}..."</div>
+          <div class="note-body">${escapeHtml(n.content)}</div>
+        </div>
+      `).join('')}
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+}
+
+
+// --- 2. CUSTOM CBT PRACTICE TEST STUDIO ---
+function selectSingleChip(btn, containerSelector) {
+  const container = document.querySelector(containerSelector);
+  if (!container) return;
+  container.querySelectorAll('.c-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function launchCustomCbtFromStudio() {
+  const subjChips = document.querySelectorAll('#customSubjChips .c-chip.active');
+  const selectedSubjs = Array.from(subjChips).map(c => c.dataset.val);
+  if (!selectedSubjs.length) {
+    alert('Please select at least one subject (Physics, Chemistry, Botany, Zoology).');
+    return;
+  }
+
+  const focusChip = document.querySelector('#customFocusChips .c-chip.active');
+  const focusMode = focusChip ? focusChip.dataset.val : 'all';
+
+  const countChip = document.querySelector('#customCountChips .c-chip.active');
+  const qCount = countChip ? parseInt(countChip.dataset.val, 10) : 45;
+
+  const timerChip = document.querySelector('#customTimerChips .c-chip.active');
+  const isTimed = timerChip ? timerChip.dataset.val === 'timed' : true;
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <section class="section" style="text-align:center;padding-top:120px">
+      <h2>Building Custom CBT Test...</h2>
+      <p style="color:var(--text-secondary);margin-top:8px">Sampling ${qCount} questions matching selected subjects (${selectedSubjs.join(', ')}) & focus mode (${focusMode}).</p>
+    </section>`;
+
+  await Promise.all(Object.keys(BOOKS).map(b => loadBookData(b)));
+  await loadPyq();
+
+  let questionPool = [];
+  const mistakesMap = getMistakes();
+
+  Object.entries(BOOKS).forEach(([bookId, meta]) => {
+    let matchesSubj = false;
+    if (selectedSubjs.includes('physics') && meta.subject === 'physics') matchesSubj = true;
+    if (selectedSubjs.includes('chemistry') && meta.subject === 'chemistry') matchesSubj = true;
+    if ((selectedSubjs.includes('botany') || selectedSubjs.includes('zoology')) && meta.subject === 'biology') matchesSubj = true;
+    if (!matchesSubj) return;
+
+    const pages = window.allLoadedBooks?.[bookId] || [];
+    pages.forEach(p => {
+      (p.questions || []).forEach((q, qi) => {
+        const qid = `${bookId}_${p.chapter}_${p.page}_${qi}`;
+        // Filter by focus
+        if (focusMode === 'weak') {
+          if (!mistakesMap[qid]) return;
+        } else if (focusMode === 'pyq') {
+          if (!q.pyq && !q.year) return;
+        }
+        questionPool.push({ ...q, qid, book: bookId, chapter: p.chapter, page: p.page });
+      });
+    });
+  });
+
+  // If weak/pyq had too few, fall back gracefully to all questions in selected subjects
+  if (questionPool.length < 5) {
+    Object.entries(BOOKS).forEach(([bookId, meta]) => {
+      let matchesSubj = false;
+      if (selectedSubjs.includes('physics') && meta.subject === 'physics') matchesSubj = true;
+      if (selectedSubjs.includes('chemistry') && meta.subject === 'chemistry') matchesSubj = true;
+      if ((selectedSubjs.includes('botany') || selectedSubjs.includes('zoology')) && meta.subject === 'biology') matchesSubj = true;
+      if (!matchesSubj) return;
+      (window.allLoadedBooks?.[bookId] || []).forEach(p => {
+        (p.questions || []).forEach((q, qi) => {
+          questionPool.push({ ...q, qid: `${bookId}_${p.chapter}_${p.page}_${qi}`, book: bookId, chapter: p.chapter, page: p.page });
+        });
+      });
+    });
+  }
+
+  // Shuffle and slice
+  questionPool.sort(() => Math.random() - 0.5);
+  const selectedQuestions = questionPool.slice(0, Math.min(qCount, questionPool.length));
+
+  cbtQuestions = selectedQuestions;
+  cbtActiveIdx = 0;
+  cbtState = {};
+  cbtActiveSection = 'Custom Test';
+  cbtTotalTime = isTimed ? (selectedQuestions.length * 60) : 0;
+  cbtTimeLeft = cbtTotalTime;
+  cbtTitle = `Custom Practice Drill (${selectedQuestions.length} Qs)`;
+  cbtMaxMarks = selectedQuestions.length * 4;
+
+  cbtSections = {
+    'Custom Test': selectedQuestions.map((_, i) => i)
+  };
+
+  startCbtTimer();
+  currentPage = 'cbt-exam';
+  render();
+  window.scrollTo(0, 0);
+}
+
+
+// --- 3. INTERACTIVE FORMULA SOLVERS ---
+let formulaDrawerMode = 'reference';
+
+function switchFormulaDrawerMode(mode) {
+  formulaDrawerMode = mode;
+  const wrap = document.getElementById('formula-drawer-wrap');
+  if (wrap && wrap.querySelector('.formula-drawer')) {
+    loadFormulasData().then(data => renderFormulaDrawer(data));
+  }
+}
+
+function renderFormulaSolvers() {
+  return `
+    <div style="padding: 12px 16px">
+      <!-- 1. Carnot Efficiency -->
+      <div class="solver-card">
+        <div class="solver-title">
+          <span>🔥 Carnot Heat Engine Efficiency</span>
+          <span class="cbt-tag">Physics XII</span>
+        </div>
+        <div class="solver-eq">η = 1 - (T_C / T_H) = W / Q_H</div>
+        <div class="solver-inputs-grid">
+          <div class="solver-input-group">
+            <label>Source Temp T_H (K)</label>
+            <input type="number" id="sol-carnot-th" class="solver-input" value="500" oninput="solveCarnot()">
+          </div>
+          <div class="solver-input-group">
+            <label>Sink Temp T_C (K)</label>
+            <input type="number" id="sol-carnot-tc" class="solver-input" value="300" oninput="solveCarnot()">
+          </div>
+          <div class="solver-input-group">
+            <label>Heat Absorbed Q_H (J)</label>
+            <input type="number" id="sol-carnot-qh" class="solver-input" value="1000" oninput="solveCarnot()">
+          </div>
+        </div>
+        <div class="solver-result" id="res-carnot">
+          <span>Efficiency (η): <b>40.0%</b> (0.40)</span>
+          <div class="solver-step">Work Done (W) = 400 J | Heat Rejected (Q_C) = 600 J</div>
+        </div>
+      </div>
+
+      <!-- 2. Coulomb's Law -->
+      <div class="solver-card">
+        <div class="solver-title">
+          <span>⚡ Coulomb's Electrostatic Force</span>
+          <span class="cbt-tag">Physics XII</span>
+        </div>
+        <div class="solver-eq">F = k · |q₁ · q₂| / r² (k = 8.99 × 10⁹ N·m²/C²)</div>
+        <div class="solver-inputs-grid">
+          <div class="solver-input-group">
+            <label>Charge q₁ (µC)</label>
+            <input type="number" id="sol-coulomb-q1" class="solver-input" value="2" oninput="solveCoulomb()">
+          </div>
+          <div class="solver-input-group">
+            <label>Charge q₂ (µC)</label>
+            <input type="number" id="sol-coulomb-q2" class="solver-input" value="-3" oninput="solveCoulomb()">
+          </div>
+          <div class="solver-input-group">
+            <label>Distance r (m)</label>
+            <input type="number" id="sol-coulomb-r" class="solver-input" value="0.1" step="0.01" oninput="solveCoulomb()">
+          </div>
+        </div>
+        <div class="solver-result" id="res-coulomb">
+          <span>Force (F): <b>5.394 N</b> (Attractive)</span>
+          <div class="solver-step">Opposite charges attract with magnitude 5.39 N</div>
+        </div>
+      </div>
+
+      <!-- 3. De Broglie Wavelength -->
+      <div class="solver-card">
+        <div class="solver-title">
+          <span>⚛️ Electron De Broglie Wavelength</span>
+          <span class="cbt-tag">Modern Physics</span>
+        </div>
+        <div class="solver-eq">λ = h / √(2m·e·V) ≈ 12.27 / √V Å</div>
+        <div class="solver-inputs-grid">
+          <div class="solver-input-group">
+            <label>Accelerating Potential V (Volts)</label>
+            <input type="number" id="sol-debroglie-v" class="solver-input" value="100" oninput="solveDeBroglie()">
+          </div>
+        </div>
+        <div class="solver-result" id="res-debroglie">
+          <span>Wavelength (λ): <b>1.227 Å</b> (0.1227 nm)</span>
+          <div class="solver-step">For V = 100 V: λ = 12.27 / √100 = 1.227 Å = 1.227 × 10⁻¹⁰ m</div>
+        </div>
+      </div>
+
+      <!-- 4. Radioactive Half-Life -->
+      <div class="solver-card">
+        <div class="solver-title">
+          <span>☢️ Radioactive Decay & Remaining Nuclei</span>
+          <span class="cbt-tag">Physics XII</span>
+        </div>
+        <div class="solver-eq">N(t) = N₀ · (1/2)^(t / t₁/₂) | λ = 0.693 / t₁/₂</div>
+        <div class="solver-inputs-grid">
+          <div class="solver-input-group">
+            <label>Initial Nuclei N₀</label>
+            <input type="number" id="sol-decay-n0" class="solver-input" value="1000" oninput="solveDecay()">
+          </div>
+          <div class="solver-input-group">
+            <label>Half-Life t₁/₂ (years)</label>
+            <input type="number" id="sol-decay-thalf" class="solver-input" value="5" oninput="solveDecay()">
+          </div>
+          <div class="solver-input-group">
+            <label>Elapsed Time t (years)</label>
+            <input type="number" id="sol-decay-t" class="solver-input" value="15" oninput="solveDecay()">
+          </div>
+        </div>
+        <div class="solver-result" id="res-decay">
+          <span>Remaining Nuclei: <b>125</b> (12.5% of original)</span>
+          <div class="solver-step">Number of half-lives n = 15/5 = 3 | Decayed: 87.5%</div>
+        </div>
+      </div>
+
+      <!-- 5. Henderson-Hasselbalch Buffer pH -->
+      <div class="solver-card">
+        <div class="solver-title">
+          <span>🧪 Buffer Solution pH (Henderson-Hasselbalch)</span>
+          <span class="cbt-tag">Chemistry XI</span>
+        </div>
+        <div class="solver-eq">pH = pK_a + log₁₀([Salt] / [Acid])</div>
+        <div class="solver-inputs-grid">
+          <div class="solver-input-group">
+            <label>pK_a of Weak Acid</label>
+            <input type="number" id="sol-buffer-pka" class="solver-input" value="4.76" step="0.01" oninput="solveBuffer()">
+          </div>
+          <div class="solver-input-group">
+            <label>[Salt] Molarity (M)</label>
+            <input type="number" id="sol-buffer-salt" class="solver-input" value="0.1" step="0.01" oninput="solveBuffer()">
+          </div>
+          <div class="solver-input-group">
+            <label>[Acid] Molarity (M)</label>
+            <input type="number" id="sol-buffer-acid" class="solver-input" value="0.1" step="0.01" oninput="solveBuffer()">
+          </div>
+        </div>
+        <div class="solver-result" id="res-buffer">
+          <span>Buffer pH: <b>4.76</b> (Acidic Buffer)</span>
+          <div class="solver-step">log([Salt]/[Acid]) = log(0.1/0.1) = 0 | pH = 4.76</div>
+        </div>
+      </div>
+
+      <!-- 6. Hardy-Weinberg Equilibrium -->
+      <div class="solver-card">
+        <div class="solver-title">
+          <span>🧬 Hardy-Weinberg Population Genetics</span>
+          <span class="cbt-tag">Biology XII</span>
+        </div>
+        <div class="solver-eq">p + q = 1 | p² + 2pq + q² = 1</div>
+        <div class="solver-inputs-grid">
+          <div class="solver-input-group">
+            <label>Recessive Frequency q² (e.g. 0.04 for 4%)</label>
+            <input type="number" id="sol-hw-q2" class="solver-input" value="0.04" step="0.01" max="1" min="0" oninput="solveHardyWeinberg()">
+          </div>
+        </div>
+        <div class="solver-result" id="res-hw">
+          <span>Alleles: <b>p = 0.80</b> | <b>q = 0.20</b></span>
+          <div class="solver-step">Homozygous Dominant (p²) = 64% | Heterozygous Carrier (2pq) = 32% | Recessive (q²) = 4%</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function solveCarnot() {
+  const th = parseFloat(document.getElementById('sol-carnot-th')?.value) || 500;
+  const tc = parseFloat(document.getElementById('sol-carnot-tc')?.value) || 300;
+  const qh = parseFloat(document.getElementById('sol-carnot-qh')?.value) || 1000;
+  const resEl = document.getElementById('res-carnot');
+  if (!resEl) return;
+  if (tc >= th) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: T_H must be strictly greater than T_C</span>`;
+    return;
+  }
+  const eta = 1 - (tc / th);
+  const w = eta * qh;
+  const qc = qh - w;
+  resEl.innerHTML = `
+    <span>Efficiency (η): <b>${(eta * 100).toFixed(1)}%</b> (${eta.toFixed(3)})</span>
+    <div class="solver-step">Work Done (W) = ${w.toFixed(1)} J | Heat Rejected (Q_C) = ${qc.toFixed(1)} J</div>
+  `;
+}
+
+function solveCoulomb() {
+  const q1 = parseFloat(document.getElementById('sol-coulomb-q1')?.value) || 2;
+  const q2 = parseFloat(document.getElementById('sol-coulomb-q2')?.value) || -3;
+  const r = parseFloat(document.getElementById('sol-coulomb-r')?.value) || 0.1;
+  const resEl = document.getElementById('res-coulomb');
+  if (!resEl) return;
+  if (r <= 0) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: Distance r must be greater than 0</span>`;
+    return;
+  }
+  const k = 8.98755e9;
+  const f = k * (Math.abs(q1 * 1e-6 * q2 * 1e-6)) / (r * r);
+  const isAttr = (q1 * q2 < 0);
+  resEl.innerHTML = `
+    <span>Force (F): <b>${f.toFixed(3)} N</b> (${isAttr ? 'Attractive' : 'Repulsive'})</span>
+    <div class="solver-step">${isAttr ? 'Opposite' : 'Like'} charges ${isAttr ? 'attract' : 'repel'} with magnitude ${f.toFixed(2)} N</div>
+  `;
+}
+
+function solveDeBroglie() {
+  const v = parseFloat(document.getElementById('sol-debroglie-v')?.value) || 100;
+  const resEl = document.getElementById('res-debroglie');
+  if (!resEl) return;
+  if (v <= 0) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: Potential V must be > 0</span>`;
+    return;
+  }
+  const lambdaAng = 12.27 / Math.sqrt(v);
+  const lambdaNm = lambdaAng / 10;
+  resEl.innerHTML = `
+    <span>Wavelength (λ): <b>${lambdaAng.toFixed(3)} Å</b> (${lambdaNm.toFixed(4)} nm)</span>
+    <div class="solver-step">λ = 12.27 / √${v} = ${lambdaAng.toFixed(3)} Å = ${lambdaAng.toFixed(3)} × 10⁻¹⁰ m</div>
+  `;
+}
+
+function solveDecay() {
+  const n0 = parseFloat(document.getElementById('sol-decay-n0')?.value) || 1000;
+  const thalf = parseFloat(document.getElementById('sol-decay-thalf')?.value) || 5;
+  const t = parseFloat(document.getElementById('sol-decay-t')?.value) || 15;
+  const resEl = document.getElementById('res-decay');
+  if (!resEl) return;
+  if (thalf <= 0) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: Half-life must be > 0</span>`;
+    return;
+  }
+  const n = t / thalf;
+  const remaining = n0 * Math.pow(0.5, n);
+  const decayedPct = ((n0 - remaining) / n0) * 100;
+  resEl.innerHTML = `
+    <span>Remaining Nuclei: <b>${remaining.toFixed(1)}</b> (${(100 - decayedPct).toFixed(1)}% of original)</span>
+    <div class="solver-step">Half-lives elapsed n = ${t} / ${thalf} = ${n.toFixed(2)} | Decayed: ${decayedPct.toFixed(1)}%</div>
+  `;
+}
+
+function solveBuffer() {
+  const pka = parseFloat(document.getElementById('sol-buffer-pka')?.value) || 4.76;
+  const salt = parseFloat(document.getElementById('sol-buffer-salt')?.value) || 0.1;
+  const acid = parseFloat(document.getElementById('sol-buffer-acid')?.value) || 0.1;
+  const resEl = document.getElementById('res-buffer');
+  if (!resEl) return;
+  if (salt <= 0 || acid <= 0) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: Concentrations must be > 0</span>`;
+    return;
+  }
+  const logRatio = Math.log10(salt / acid);
+  const ph = pka + logRatio;
+  resEl.innerHTML = `
+    <span>Buffer pH: <b>${ph.toFixed(2)}</b> (${ph < 7 ? 'Acidic' : (ph > 7 ? 'Basic' : 'Neutral')} Buffer)</span>
+    <div class="solver-step">log([Salt]/[Acid]) = log(${salt}/${acid}) = ${logRatio.toFixed(3)} | pH = ${pka} + ${logRatio.toFixed(3)}</div>
+  `;
+}
+
+function solveHardyWeinberg() {
+  const q2 = parseFloat(document.getElementById('sol-hw-q2')?.value) || 0.04;
+  const resEl = document.getElementById('res-hw');
+  if (!resEl) return;
+  if (q2 < 0 || q2 > 1) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: Frequency must be between 0 and 1</span>`;
+    return;
+  }
+  const q = Math.sqrt(q2);
+  const p = 1 - q;
+  const p2 = p * p;
+  const twoPq = 2 * p * q;
+  resEl.innerHTML = `
+    <span>Alleles: <b>p = ${p.toFixed(3)}</b> | <b>q = ${q.toFixed(3)}</b></span>
+    <div class="solver-step">Homozygous Dominant (p²) = ${(p2 * 100).toFixed(1)}% | Carrier (2pq) = ${(twoPq * 100).toFixed(1)}% | Recessive (q²) = ${(q2 * 100).toFixed(1)}%</div>
+  `;
+}
+
+
+// --- 4. CROSS-DEVICE BACKUP & SYNC HUB ---
+let activeSyncTab = 'export';
+
+function openSyncModal() {
+  const wrap = document.getElementById('sync-modal-wrap');
+  if (!wrap) return;
+
+  const progressCount = JSON.parse(localStorage.getItem('prepclone-progress') || '[]').length;
+  const mistakesCount = Object.keys(getMistakes()).length;
+  const starredCount = getStarredSet().size;
+  const notesCount = Object.keys(getNotes()).length;
+  const cbtCount = JSON.parse(localStorage.getItem('prepclone-cbt-history') || '[]').length;
+  const streakDays = (JSON.parse(localStorage.getItem('prepclone-streak') || '{}').currentStreak) || 1;
+
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <div class="app-modal-backdrop" onclick="closeSyncModal(event)">
+      <div class="app-modal-card" onclick="event.stopPropagation()">
+        <div class="app-modal-header">
+          <div class="app-modal-title">
+            <span>☁️</span> Cross-Device Sync & Profile Backup
+          </div>
+          <button class="app-modal-close" onclick="closeSyncModal()">✕</button>
+        </div>
+        <div class="app-modal-body">
+          <div class="sync-stats-grid">
+            <div class="sync-stat-item">
+              <div class="sync-stat-val">${progressCount}</div>
+              <div class="sync-stat-label">MCQs Solved</div>
+            </div>
+            <div class="sync-stat-item">
+              <div class="sync-stat-val" style="color:#ef4444">${mistakesCount}</div>
+              <div class="sync-stat-label">Logged Mistakes</div>
+            </div>
+            <div class="sync-stat-item">
+              <div class="sync-stat-val" style="color:#f59e0b">${notesCount}</div>
+              <div class="sync-stat-label">Personal Notes</div>
+            </div>
+            <div class="sync-stat-item">
+              <div class="sync-stat-val" style="color:#3b82f6">${cbtCount}</div>
+              <div class="sync-stat-label">CBT Mocks</div>
+            </div>
+            <div class="sync-stat-item">
+              <div class="sync-stat-val" style="color:#10b981">🔥 ${streakDays}</div>
+              <div class="sync-stat-label">Streak Days</div>
+            </div>
+          </div>
+
+          <div class="sync-options-tabs">
+            <button class="sync-opt-tab ${activeSyncTab === 'export' ? 'active' : ''}" onclick="switchSyncTab('export')">📤 Export / Transfer</button>
+            <button class="sync-opt-tab ${activeSyncTab === 'import' ? 'active' : ''}" onclick="switchSyncTab('import')">📥 Import / Restore</button>
+            <button class="sync-opt-tab ${activeSyncTab === 'snapshots' ? 'active' : ''}" onclick="switchSyncTab('snapshots')">💾 Local Snapshots</button>
+          </div>
+
+          <div id="syncTabContent">
+            ${renderSyncTabBody(activeSyncTab)}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function closeSyncModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  const wrap = document.getElementById('sync-modal-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function switchSyncTab(tab) {
+  activeSyncTab = tab;
+  openSyncModal();
+}
+
+function renderSyncTabBody(tab) {
+  if (tab === 'export') {
+    return `
+      <div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">
+          Transfer your entire study history across devices (PC ➔ Phone, Laptop ➔ Tablet) with zero cloud accounts or third-party servers.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <button class="btn-primary" style="padding:12px;font-weight:700" onclick="exportStudyProfile()">
+            📥 Download Full Backup File (.json)
+          </button>
+          <div style="text-align:center;font-size:12px;color:var(--text-muted)">— OR TRANSFER VIA SYNC CODE —</div>
+          <button class="btn-secondary" style="padding:10px" onclick="generateAndCopySyncCode()">
+            📋 Copy One-Click Sync String to Clipboard
+          </button>
+        </div>
+        <div id="syncCodePreview" style="display:none;margin-top:14px">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Sync payload (Paste into another device):</div>
+          <div class="sync-code-box" id="syncCodeBox"></div>
+        </div>
+      </div>
+    `;
+  } else if (tab === 'import') {
+    return `
+      <div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:14px">
+          Restore from a downloaded backup JSON file or paste a Sync Code string from your other device.
+        </p>
+        <div class="sync-dropzone" onclick="document.getElementById('importProfileInput').click()">
+          <span style="font-size:32px">📁</span>
+          <div style="font-weight:700;margin:8px 0 4px">Click or drag a backup file here</div>
+          <div style="font-size:12px;color:var(--text-muted)">Accepts prepclone_backup_*.json files</div>
+          <input type="file" id="importProfileInput" accept=".json" style="display:none" onchange="handleImportProfileFile(this)">
+        </div>
+
+        <div style="margin-top:16px">
+          <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px">Or Paste Sync Code:</label>
+          <textarea id="syncCodeInput" class="note-textarea" style="min-height:60px;font-family:monospace;font-size:11.5px" placeholder="Paste base64 sync payload here..."></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+            <label style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="mergeProfileCheckbox" checked> Merge with existing data (Recommended)
+            </label>
+            <button class="btn-primary btn-sm" onclick="applyPastedSyncCode()">Apply Sync ➔</button>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    const snapshots = getSnapshots();
+    return `
+      <div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:14px">
+          Automatic local snapshots are captured periodically to safeguard your revision history against accidental browser cache clearing.
+        </p>
+        ${snapshots.length === 0 ? `
+          <div style="text-align:center;padding:24px;color:var(--text-muted);font-size:13px">
+            No snapshots recorded yet. Snapshots are created automatically as you study.
+          </div>
+        ` : `
+          <div style="display:flex;flex-direction:column;gap:10px">
+            ${snapshots.map((s, idx) => `
+              <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div style="font-size:13px;font-weight:700">${new Date(s.timestamp).toLocaleString()}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">${s.progressCount} MCQs · ${s.mistakesCount} Mistakes · ${s.notesCount} Notes</div>
+                </div>
+                <button class="btn-secondary btn-sm" onclick="restoreSnapshotByIndex(${idx})">Restore ↺</button>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+    `;
+  }
+}
+
+function exportStudyProfile() {
+  const profile = {
+    version: '2.2.0',
+    exportDate: new Date().toISOString(),
+    progress: JSON.parse(localStorage.getItem('prepclone-progress') || '[]'),
+    mistakes: getMistakes(),
+    starred: JSON.parse(localStorage.getItem('prepclone-starred') || '[]'),
+    starredData: JSON.parse(localStorage.getItem('prepclone-starred-data') || '{}'),
+    cbtHistory: JSON.parse(localStorage.getItem('prepclone-cbt-history') || '[]'),
+    streak: JSON.parse(localStorage.getItem('prepclone-streak') || '{}'),
+    flashcards: JSON.parse(localStorage.getItem('prepclone-flashcards') || '{}'),
+    notes: getNotes(),
+    questionBuckets: JSON.parse(localStorage.getItem('prepclone-question-buckets') || '{}'),
+    dailyGoal: JSON.parse(localStorage.getItem('prepclone-daily-goal') || '{}'),
+    theme: localStorage.getItem('theme') || 'dark',
+    sound: localStorage.getItem('prepclone-sound') || 'on'
+  };
+
+  const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `prepclone_profile_${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function generateAndCopySyncCode() {
+  const compact = {
+    p: JSON.parse(localStorage.getItem('prepclone-progress') || '[]'),
+    m: getMistakes(),
+    s: JSON.parse(localStorage.getItem('prepclone-starred') || '[]'),
+    n: getNotes(),
+    g: JSON.parse(localStorage.getItem('prepclone-daily-goal') || '{}'),
+    t: Date.now()
+  };
+  const jsonStr = JSON.stringify(compact);
+  const code = btoa(unescape(encodeURIComponent(jsonStr)));
+  const box = document.getElementById('syncCodeBox');
+  const prev = document.getElementById('syncCodePreview');
+  if (box && prev) {
+    box.textContent = code;
+    prev.style.display = 'block';
+  }
+  navigator.clipboard.writeText(code).then(() => {
+    alert('Sync Code copied to clipboard! Paste it on your phone or tablet.');
+  }).catch(() => {});
+}
+
+function handleImportProfileFile(input) {
+  const file = input.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      applyImportData(data, true);
+    } catch(err) {
+      alert('Invalid JSON backup file.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function applyPastedSyncCode() {
+  const ta = document.getElementById('syncCodeInput');
+  const code = (ta?.value || '').trim();
+  if (!code) {
+    alert('Please paste a sync code.');
+    return;
+  }
+  try {
+    const jsonStr = decodeURIComponent(escape(atob(code)));
+    const compact = JSON.parse(jsonStr);
+    const expanded = {
+      progress: compact.p,
+      mistakes: compact.m,
+      starred: compact.s,
+      notes: compact.n,
+      dailyGoal: compact.g
+    };
+    const merge = document.getElementById('mergeProfileCheckbox')?.checked !== false;
+    applyImportData(expanded, merge);
+  } catch(e) {
+    alert('Could not decode sync string. Please check the code.');
+  }
+}
+
+function applyImportData(data, merge) {
+  if (merge) {
+    // Merge progress
+    const curP = new Set(JSON.parse(localStorage.getItem('prepclone-progress') || '[]'));
+    (data.progress || []).forEach(x => curP.add(x));
+    localStorage.setItem('prepclone-progress', JSON.stringify([...curP]));
+
+    // Merge mistakes
+    const curM = getMistakes();
+    Object.assign(curM, data.mistakes || {});
+    localStorage.setItem('prepclone-mistakes', JSON.stringify(curM));
+
+    // Merge starred
+    const curS = new Set(JSON.parse(localStorage.getItem('prepclone-starred') || '[]'));
+    (data.starred || []).forEach(x => curS.add(x));
+    localStorage.setItem('prepclone-starred', JSON.stringify([...curS]));
+
+    // Merge notes
+    const curN = getNotes();
+    Object.assign(curN, data.notes || {});
+    localStorage.setItem('prepclone-notes', JSON.stringify(curN));
+
+    if (data.cbtHistory) {
+      const curCbt = JSON.parse(localStorage.getItem('prepclone-cbt-history') || '[]');
+      const combined = [...curCbt, ...data.cbtHistory];
+      localStorage.setItem('prepclone-cbt-history', JSON.stringify(combined));
+    }
+  } else {
+    // Replace completely
+    if (data.progress) localStorage.setItem('prepclone-progress', JSON.stringify(data.progress));
+    if (data.mistakes) localStorage.setItem('prepclone-mistakes', JSON.stringify(data.mistakes));
+    if (data.starred) localStorage.setItem('prepclone-starred', JSON.stringify(data.starred));
+    if (data.starredData) localStorage.setItem('prepclone-starred-data', JSON.stringify(data.starredData));
+    if (data.notes) localStorage.setItem('prepclone-notes', JSON.stringify(data.notes));
+    if (data.cbtHistory) localStorage.setItem('prepclone-cbt-history', JSON.stringify(data.cbtHistory));
+    if (data.flashcards) localStorage.setItem('prepclone-flashcards', JSON.stringify(data.flashcards));
+    if (data.streak) localStorage.setItem('prepclone-streak', JSON.stringify(data.streak));
+    if (data.dailyGoal) localStorage.setItem('prepclone-daily-goal', JSON.stringify(data.dailyGoal));
+  }
+
+  saveAutoSnapshot();
+  alert('Profile synced successfully! Refreshing view...');
+  location.reload();
+}
+
+function getSnapshots() {
+  try { return JSON.parse(localStorage.getItem('prepclone-snapshots') || '[]'); }
+  catch(e) { return []; }
+}
+
+function saveAutoSnapshot() {
+  try {
+    const list = getSnapshots();
+    const progressCount = JSON.parse(localStorage.getItem('prepclone-progress') || '[]').length;
+    const mistakesCount = Object.keys(getMistakes()).length;
+    const notesCount = Object.keys(getNotes()).length;
+
+    const snap = {
+      timestamp: Date.now(),
+      progressCount,
+      mistakesCount,
+      notesCount,
+      data: {
+        progress: JSON.parse(localStorage.getItem('prepclone-progress') || '[]'),
+        mistakes: getMistakes(),
+        starred: JSON.parse(localStorage.getItem('prepclone-starred') || '[]'),
+        notes: getNotes(),
+        cbtHistory: JSON.parse(localStorage.getItem('prepclone-cbt-history') || '[]')
+      }
+    };
+    list.unshift(snap);
+    localStorage.setItem('prepclone-snapshots', JSON.stringify(list.slice(0, 5)));
+  } catch(e) {}
+}
+
+function restoreSnapshotByIndex(idx) {
+  const list = getSnapshots();
+  if (!list[idx]) return;
+  if (confirm('Restore this snapshot? Any progress since will be overwritten.')) {
+    applyImportData(list[idx].data, false);
+  }
+}
+
+
+// --- 5. FOCUS MODE & BINAURAL AUDIO ENGINE ---
+let focusAudioPlaying = false;
+let currentFocusType = null;
+let focusGainNode = null;
+let focusOscLeft = null;
+let focusOscRight = null;
+let focusNoiseNode = null;
+
+let pomodoroTimerId = null;
+let pomodoroSecondsLeft = 25 * 60;
+let pomodoroMode = 'focus';
+let pomodoroRunning = false;
+
+function toggleFocusModal() {
+  const wrap = document.getElementById('focus-modal-wrap');
+  if (!wrap) return;
+  const isHidden = (wrap.style.display === 'none' || !wrap.style.display);
+  wrap.style.display = isHidden ? 'block' : 'none';
+  if (isHidden) renderFocusModal();
+}
+
+function closeFocusModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  const wrap = document.getElementById('focus-modal-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function renderFocusModal() {
+  const wrap = document.getElementById('focus-modal-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = `
+    <div class="app-modal-backdrop" onclick="closeFocusModal(event)">
+      <div class="app-modal-card" onclick="event.stopPropagation()" style="max-width:520px">
+        <div class="app-modal-header">
+          <div class="app-modal-title">
+            <span>🎧</span> Focus Mode & Binaural Beats
+          </div>
+          <button class="app-modal-close" onclick="closeFocusModal()">✕</button>
+        </div>
+        <div class="app-modal-body">
+          <div class="focus-audio-bar">
+            <div class="audio-visualizer">
+              <div class="audio-bar ${focusAudioPlaying ? 'playing' : ''}"></div>
+              <div class="audio-bar ${focusAudioPlaying ? 'playing' : ''}"></div>
+              <div class="audio-bar ${focusAudioPlaying ? 'playing' : ''}"></div>
+              <div class="audio-bar ${focusAudioPlaying ? 'playing' : ''}"></div>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700">${focusAudioPlaying ? `Playing: ${currentFocusType.toUpperCase()}` : 'Study Sound Stopped'}</div>
+              <div style="font-size:11px;color:var(--text-muted)">100% Client-Side Web Audio Synthesis (Best with Headphones)</div>
+            </div>
+            ${focusAudioPlaying ? `
+              <button class="btn-secondary btn-sm" onclick="stopFocusAudio()">⏸ Stop</button>
+            ` : ''}
+          </div>
+
+          <div class="focus-options-grid">
+            <div class="focus-card-btn ${currentFocusType === 'alpha' && focusAudioPlaying ? 'active' : ''}" onclick="startFocusAudio('alpha')">
+              <div class="focus-icon">🧠</div>
+              <div class="focus-name">Alpha Waves (10 Hz)</div>
+              <div class="focus-desc">Active recall, problem-solving, relaxed alertness</div>
+            </div>
+            <div class="focus-card-btn ${currentFocusType === 'theta' && focusAudioPlaying ? 'active' : ''}" onclick="startFocusAudio('theta')">
+              <div class="focus-icon">🌙</div>
+              <div class="focus-name">Theta Waves (6 Hz)</div>
+              <div class="focus-desc">Deep memorization & long-term retention</div>
+            </div>
+            <div class="focus-card-btn ${currentFocusType === 'pink' && focusAudioPlaying ? 'active' : ''}" onclick="startFocusAudio('pink')">
+              <div class="focus-icon">🌧️</div>
+              <div class="focus-name">Soft Pink Noise</div>
+              <div class="focus-desc">Mask ambient background chatter and room noise</div>
+            </div>
+            <div class="focus-card-btn ${!focusAudioPlaying ? 'active' : ''}" onclick="stopFocusAudio()">
+              <div class="focus-icon">🔇</div>
+              <div class="focus-name">Silent Mode</div>
+              <div class="focus-desc">Mute all study sounds</div>
+            </div>
+          </div>
+
+          <div class="pomodoro-box">
+            <div style="font-size:12px;font-weight:700;color:var(--accent-orange);text-transform:uppercase">
+              ⏱ Pomodoro Study Technique (${pomodoroMode.toUpperCase()})
+            </div>
+            <div class="pomo-time" id="pomoTimeDisplay">${formatPomoTime(pomodoroSecondsLeft)}</div>
+            <div class="pomo-btn-group">
+              <button class="btn-primary btn-sm" onclick="togglePomodoro()">${pomodoroRunning ? '⏸ Pause' : '▶ Start Focus'}</button>
+              <button class="btn-secondary btn-sm" onclick="resetPomodoro(25)">25m Study</button>
+              <button class="btn-secondary btn-sm" onclick="resetPomodoro(5)">5m Break</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function startFocusAudio(type) {
+  stopFocusAudio();
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  focusGainNode = ctx.createGain();
+  focusGainNode.gain.setValueAtTime(0.04, ctx.currentTime);
+  focusGainNode.connect(ctx.destination);
+
+  if (type === 'alpha' || type === 'theta') {
+    const diff = type === 'alpha' ? 10 : 6;
+    const baseFreq = 200;
+
+    const merger = ctx.createChannelMerger(2);
+
+    focusOscLeft = ctx.createOscillator();
+    focusOscLeft.type = 'sine';
+    focusOscLeft.frequency.value = baseFreq;
+
+    focusOscRight = ctx.createOscillator();
+    focusOscRight.type = 'sine';
+    focusOscRight.frequency.value = baseFreq + diff;
+
+    focusOscLeft.connect(merger, 0, 0); // left channel
+    focusOscRight.connect(merger, 0, 1); // right channel
+    merger.connect(focusGainNode);
+
+    focusOscLeft.start();
+    focusOscRight.start();
+  } else if (type === 'pink') {
+    // 5-second buffer of generated pink noise
+    const bufferSize = ctx.sampleRate * 5;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.08;
+      b6 = white * 0.115926;
+    }
+    focusNoiseNode = ctx.createBufferSource();
+    focusNoiseNode.buffer = buffer;
+    focusNoiseNode.loop = true;
+    focusNoiseNode.connect(focusGainNode);
+    focusNoiseNode.start();
+  }
+
+  focusAudioPlaying = true;
+  currentFocusType = type;
+  const btn = document.getElementById('btnFocusMode');
+  if (btn) btn.classList.add('active');
+  renderFocusModal();
+}
+
+function stopFocusAudio() {
+  if (focusOscLeft) { try { focusOscLeft.stop(); } catch(e){} focusOscLeft = null; }
+  if (focusOscRight) { try { focusOscRight.stop(); } catch(e){} focusOscRight = null; }
+  if (focusNoiseNode) { try { focusNoiseNode.stop(); } catch(e){} focusNoiseNode = null; }
+  focusAudioPlaying = false;
+  currentFocusType = null;
+  const btn = document.getElementById('btnFocusMode');
+  if (btn) btn.classList.remove('active');
+  const wrap = document.getElementById('focus-modal-wrap');
+  if (wrap && wrap.style.display !== 'none') renderFocusModal();
+}
+
+function formatPomoTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function togglePomodoro() {
+  if (pomodoroRunning) {
+    clearInterval(pomodoroTimerId);
+    pomodoroRunning = false;
+  } else {
+    pomodoroRunning = true;
+    pomodoroTimerId = setInterval(() => {
+      pomodoroSecondsLeft--;
+      if (pomodoroSecondsLeft <= 0) {
+        clearInterval(pomodoroTimerId);
+        pomodoroRunning = false;
+        playSingingBowlChime();
+        if (pomodoroMode === 'focus') {
+          alert('🎉 Pomodoro Focus Session Complete! Time for a 5-minute break.');
+          resetPomodoro(5);
+        } else {
+          alert('⚡ Break finished! Ready to resume studying?');
+          resetPomodoro(25);
+        }
+      }
+      const disp = document.getElementById('pomoTimeDisplay');
+      if (disp) disp.textContent = formatPomoTime(pomodoroSecondsLeft);
+    }, 1000);
+  }
+  renderFocusModal();
+}
+
+function resetPomodoro(mins) {
+  clearInterval(pomodoroTimerId);
+  pomodoroRunning = false;
+  pomodoroMode = mins === 5 ? 'break' : 'focus';
+  pomodoroSecondsLeft = mins * 60;
+  renderFocusModal();
+}
+
+function playSingingBowlChime() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const osc1 = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc1.type = 'sine';
+  osc1.frequency.setValueAtTime(528, now); // Love / Repair frequency
+  osc2.type = 'sine';
+  osc2.frequency.setValueAtTime(1056, now);
+
+  gain.gain.setValueAtTime(0.08, now);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
+
+  osc1.connect(gain);
+  osc2.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + 3.5);
+  osc2.stop(now + 3.5);
+}
+
+
+// --- 6. DAILY TARGET GOAL TRACKER ---
+function getDailyGoal() {
+  const today = new Date().toDateString();
+  try {
+    const data = JSON.parse(localStorage.getItem('prepclone-daily-goal') || '{}');
+    if (data.date !== today) {
+      return { target: data.target || 50, count: 0, date: today };
+    }
+    return data;
+  } catch(e) {
+    return { target: 50, count: 0, date: today };
+  }
+}
+
+function recordDailyGoalAttempt() {
+  const goal = getDailyGoal();
+  const prevCount = goal.count;
+  goal.count = prevCount + 1;
+  localStorage.setItem('prepclone-daily-goal', JSON.stringify(goal));
+  updateDailyGoalDisplay();
+
+  // Trigger celebration if target reached for first time today
+  if (prevCount < goal.target && goal.count >= goal.target) {
+    triggerGoalConfetti();
+  }
+}
+
+function setDailyGoalTarget(val) {
+  const goal = getDailyGoal();
+  goal.target = val;
+  localStorage.setItem('prepclone-daily-goal', JSON.stringify(goal));
+  updateDailyGoalDisplay();
+  closeDailyGoalModal();
+}
+
+function updateDailyGoalDisplay() {
+  const goal = getDailyGoal();
+  const el = document.getElementById('dailyGoalDisplay');
+  if (el) el.textContent = `${goal.count}/${goal.target}`;
+}
+
+function openDailyGoalModal() {
+  const wrap = document.getElementById('daily-goal-modal-wrap');
+  if (!wrap) return;
+  const goal = getDailyGoal();
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <div class="app-modal-backdrop" onclick="closeDailyGoalModal(event)">
+      <div class="app-modal-card" onclick="event.stopPropagation()" style="max-width:440px;text-align:center">
+        <div class="app-modal-header">
+          <div class="app-modal-title" style="margin:0 auto">
+            <span>🎯</span> Daily Question Goal
+          </div>
+          <button class="app-modal-close" onclick="closeDailyGoalModal()">✕</button>
+        </div>
+        <div class="app-modal-body">
+          <div style="font-size:42px;margin:8px 0">🎯</div>
+          <div style="font-size:32px;font-weight:800;color:var(--accent-green);margin-bottom:4px">
+            ${goal.count} / ${goal.target} Qs
+          </div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px">
+            Daily consistency is the #1 predictor of NEET/JEE exam rank. Set a daily question target that fits your preparation routine.
+          </p>
+          <div style="display:flex;justify-content:center;gap:10px;margin-bottom:16px">
+            <button class="c-chip ${goal.target === 20 ? 'active' : ''}" onclick="setDailyGoalTarget(20)">20 Qs / Day</button>
+            <button class="c-chip ${goal.target === 50 ? 'active' : ''}" onclick="setDailyGoalTarget(50)">50 Qs / Day</button>
+            <button class="c-chip ${goal.target === 100 ? 'active' : ''}" onclick="setDailyGoalTarget(100)">100 Qs / Day</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function closeDailyGoalModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  const wrap = document.getElementById('daily-goal-modal-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function triggerGoalConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const particles = [];
+  const colors = ['#ff6b35', '#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
+  for (let i = 0; i < 120; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -canvas.height * 0.5,
+      r: Math.random() * 6 + 3,
+      c: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 4 + 3,
+      tilt: Math.random() * 10
+    });
+  }
+
+  let startTime = Date.now();
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.tilt += 0.1;
+      ctx.fillStyle = p.c;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    if (Date.now() - startTime < 3000) {
+      requestAnimationFrame(animate);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'none';
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+// Initialize Daily Goal text on page load
+updateDailyGoalDisplay();
+
 
 // ============ INIT ============
 render();

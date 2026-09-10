@@ -4,6 +4,60 @@ All notable changes to PrepClone are documented in reverse-chronological order.
 
 ---
 
+## [v2.2.0] — 2026-09-10 — Enterprise Milestone 8 · Cross-Device Sync, Notes, Custom CBT Studio, Solvers & Focus Audio
+
+### ☁️ Cross-Device Backup & Sync Hub (Zero-Cloud Privacy)
+- **Top Bar Sync Trigger (`☁️ Sync`)**: One-click modal accessible anytime from navbar and dashboard.
+- **5 KPI Study Stats**: Live counters for MCQs Solved, Logged Mistakes, Personal Notes, CBT Mocks, and Streak Days.
+- **Export Study Profile**: Generates `prepclone_profile_[date].json` bundling progress, mistakes with 5 buckets, bookmarks, notes, CBT sessions, flashcard intervals, and streak.
+- **One-Click Sync Code**: Base64 encoded compressed string for instantaneous cross-device transfer without saving files.
+- **Import with Intelligent Merge**: Option to merge with existing data or replace profile entirely.
+- **Local Snapshot Recovery**: Auto-captures the last 5 local snapshots to safeguard study history against cache clearing.
+
+### 📝 Inline NCERT Reader Sticky Notes ("My Notes")
+- **`✏️ Note` Button** on every paragraph in the authentic textbook reader (`renderChapter()`).
+- **Inline Sticky Note Card**: Renders personal notes right beneath the textbook paragraph with timestamp, edit, and delete options.
+- **Notebook View "My Notes" Tab**: 3rd tab in Notebook view (`renderNotebook()`) displaying all annotations with subject filtering and real-time search.
+- **1-Click NCERT Jump**: `📖 Open in NCERT ➔` button navigates directly to the exact textbook paragraph with a golden focus pulse.
+- **🖨️ Export My Notes**: Generates a clean printable revision sheet of all personal notes for offline review.
+
+### 🛠️ Custom CBT Practice Test Studio
+- Added to Mix Quiz view (`renderMixQuizSetup()`).
+- **Subject Multi-select**: Physics, Chemistry, Botany, Zoology.
+- **Focus Modes**: All NCERT Topics, 🎯 Target Weak Areas (prioritizes chapters with mistakes or accuracy <70%), ⭐ PYQs Only (2010–2025).
+- **Question Counts**: 15 Qs, 30 Qs, 45 Qs, 90 Qs, 180 Qs.
+- **Timer Modes**: Timed (1 min/Q) or Untimed Practice.
+- Launches directly into the authentic NTA CBT testing interface with custom section tabs and scorecards.
+
+### 🧮 Interactive Formula Solvers in Formula Drawer (`Alt+F`)
+- **Mode Switcher**: Toggle between `⚡ Reference Cards` and `🧮 Interactive Solvers (6)`.
+- 6 Numerical Solvers with real-time dynamic inputs and step-by-step substitution:
+  1. **Carnot Engine Efficiency**: Inputs $T_H, T_C, Q_H \implies \eta, W, Q_C$.
+  2. **Coulomb's Law**: Inputs $q_1, q_2, r \implies$ Electrostatic Force $F$ (Newtons) with attraction/repulsion indicator.
+  3. **De Broglie Wavelength**: Input Accelerating Potential $V \implies \lambda$ in Ångströms and nm.
+  4. **Radioactive Decay & Half-Life**: Inputs $N_0, t_{1/2}, t \implies$ Remaining nuclei, decayed %, decay constant $\lambda$.
+  5. **Henderson-Hasselbalch Buffer pH**: Inputs $\text{pK}_a, [\text{Salt}], [\text{Acid}] \implies$ Buffer pH with acidic/basic classification.
+  6. **Hardy-Weinberg Frequency**: Input $q^2 \implies p, q, p^2, 2pq$.
+
+### 🎧 Focus Mode & Binaural Audio Engine
+- **`🎧 Focus` Button** in top navigation with visualizer animation and active state.
+- **Binaural Beats**:
+  - 🧠 Alpha Waves (10 Hz) — 200 Hz Left, 210 Hz Right (Active recall & alertness)
+  - 🌙 Theta Waves (6 Hz) — 200 Hz Left, 206 Hz Right (Deep memory consolidation)
+- **Soft Pink Noise**: Continuous filtered noise to mask background distractions.
+- **Pomodoro Study Timer**: 25m Focus / 5m Break state machine with gentle 528 Hz singing bowl chime on cycle completion.
+
+### 🎯 Daily Target Goal Tracker
+- Top navigation progress pill (`🎯 0/50 Qs`).
+- Configurable daily MCQ goal: 20, 50, or 100 Qs/day.
+- Increments automatically with each question answered.
+- Celebratory canvas confetti particle burst when goal is reached for the day.
+
+### 🔒 Service Worker (`sw.js`)
+- Bumped cache version to `prepclone-v2.2.0`.
+
+---
+
 ## [v2.1.0] — 2026-09-09 — Production Release · 24/7 Live Hosting
 
 ### 🌐 Deployment

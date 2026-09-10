@@ -186,6 +186,50 @@ interface FlashcardState {
 // Keyed by card ID string
 ```
 
+### `prepclone-notes` — Personal NCERT margin annotations
+```typescript
+interface NoteRecord {
+  id: string;            // "${bookId}_${chapterIdx}_${page}_${qidx}"
+  content: string;       // User handwritten-style study note
+  bookId: string;
+  bookTitle: string;
+  chapterIdx: number;
+  chapterTitle: string;
+  pageNum: number;
+  paraNum: number;
+  paraSnippet: string;   // Verbatim excerpt of annotated paragraph
+  updatedAt: number;     // ms epoch
+}
+type NotesStore = Record<string, NoteRecord>;
+```
+
+### `prepclone-daily-goal` — Daily study target
+```typescript
+interface DailyGoalRecord {
+  target: number;        // 20 | 50 | 100 Qs
+  count: number;         // Questions answered today
+  date: string;          // e.g. "Thu Sep 10 2026"
+}
+```
+
+### `prepclone-snapshots` — Local backup vault
+```typescript
+interface LocalSnapshot {
+  timestamp: number;
+  progressCount: number;
+  mistakesCount: number;
+  notesCount: number;
+  data: {
+    progress: string[];
+    mistakes: Record<string, MistakeRecord>;
+    starred: string[];
+    notes: NotesStore;
+    cbtHistory: CbtSession[];
+  };
+}
+type SnapshotVault = LocalSnapshot[]; // Last 5 rotating snapshots
+```
+
 ### User Preference Keys
 - `theme`: `'dark'` | `'light'` | `'oled'` | `'sepia'`
 - `prepclone-sound`: `'on'` | `'off'`
@@ -241,10 +285,14 @@ Zero external audio assets. All sounds synthesized via `AudioContext`:
 | `click` | Sine | 440 Hz | 50 ms | Option selection |
 | `correct` | Triangle | 523→659 Hz | 220 ms | Correct answer |
 | `marker` | Sine sweep | 320→540 Hz | 180 ms | Hint highlight |
+| `alpha` | Stereo Sine | 200 Hz L / 210 Hz R | Continuous (10 Hz diff) | Active recall focus |
+| `theta` | Stereo Sine | 200 Hz L / 206 Hz R | Continuous (6 Hz diff) | Deep memorization |
+| `pink` | Filtered Buffer | Random Gaussian | Continuous loop | Room noise masking |
+| `chime` | Dual Harmonic | 528 Hz + 1056 Hz | 3,500 ms exponential decay | Pomodoro completion |
 
 ---
 
-## 9. Service Worker Cache Strategy (`sw.js` — v2.1.0)
+## 9. Service Worker Cache Strategy (`sw.js` — v2.2.0)
 
 **Install Phase — Static Asset Precache:**
 ```

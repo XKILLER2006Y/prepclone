@@ -37,7 +37,13 @@ Open on any device: PC, Mac, Android, iPhone, tablet. Install as a PWA from your
 | **Pacing Analytics** | None | **Darwin EffortDNA per-question timer** |
 | **Audio TTS Reader** | None | **NeetPrep-style NCERT podcast (Web Speech API)** |
 | **Cloze Blanks** | None | **MemoNeet-style active recall masking** |
-| **Offline Capability** | Online only | **100% Offline PWA (Service Worker)** |
+| **Cross-Device Sync** | Cloud login required | **Zero-Cloud Profile Sync & One-Click Code** |
+| **Personal Margin Notes** | None | **Inline Paragraph Sticky Notes + Export Sheet** |
+| **Custom Test Studio** | Locked presets | **Custom CBT Builder + Weak-Chapter Targeting** |
+| **Formula Solvers** | None | **6 Interactive Solvers (Carnot, Coulomb, etc.)** |
+| **Focus Audio & Beats** | None | **10Hz Alpha / 6Hz Theta Waves + Pomodoro** |
+| **Daily Target Goals** | None | **Configurable MCQ Goal + Streak Engine** |
+| **Offline Capability** | Online only | **100% Offline PWA (Service Worker v2.2.0)** |
 | **Keyboard Navigation** | None | **Arrow keys, A-D, H, S, Space, Ctrl+K, Alt+F** |
 
 ---
@@ -134,6 +140,46 @@ Replicates the NTA NEET/JEE exam interface:
 - `🧠 Cloze Recall` toggle masks scientific keywords with `[ ????? ]` interactive blanks.
 - Tap any blank to reveal the verbatim NCERT term.
 - Dynamic extraction: works across all 1,690 pages, not a static word list.
+
+### 15. Cross-Device Backup & Sync Hub (`☁️ Sync`)
+- **Zero-Cloud Privacy**: Transfer your complete study history between PC, laptop, phone, and tablet without external databases or accounts.
+- **Export / Import**: 1-click JSON backup bundling progress, mistake buckets, notes, and streak.
+- **One-Click Sync String**: Base64 encoded payload to copy & paste across devices in seconds.
+- **Local Snapshots**: Automatic rotating local backups to prevent accidental cache loss.
+
+### 16. Personal NCERT Margin Notes ("My Notes")
+- `✏️ Note` button attached directly to every textbook paragraph in the authentic reader view.
+- Persistent sticky note card with timestamps, editing, and inline deletion.
+- Dedicated **"📝 My Notes"** tab in Notebook view with subject filters and search.
+- 1-click `📖 Open in NCERT ➔` button navigates directly to the textbook paragraph with a golden pulse.
+- `🖨️ Export My Notes` generates a clean printable revision sheet for offline study.
+
+### 17. Custom CBT Practice Test Studio
+- Build custom timed tests across any combination of Physics, Chemistry, Botany, and Zoology.
+- **Target Weak Areas**: Automatically prioritizes chapters with mistakes or accuracy under 70%.
+- **PYQs Only**: Instant marathon test using real NEET/JEE questions from 2010–2025.
+- Selectable question counts (15, 30, 45, 90, 180 Qs) and customizable timer modes.
+
+### 18. Interactive Formula Solvers
+- Mode switch in Formula Drawer (`Alt+F`): `⚡ Reference Cards` ⇄ `🧮 Interactive Solvers (6)`.
+- Real-time numerical solvers with live step-by-step substitution:
+  - Carnot Heat Engine Efficiency ($\eta = 1 - T_C / T_H$)
+  - Coulomb's Electrostatic Force ($F = k |q_1 q_2| / r^2$)
+  - Electron De Broglie Wavelength ($\lambda = 12.27 / \sqrt{V}\ \text{Å}$)
+  - Radioactive Decay & Half-Life ($N = N_0 (1/2)^{t / t_{1/2}}$)
+  - Henderson-Hasselbalch Buffer pH ($\text{pH} = \text{pK}_a + \log\frac{[\text{Salt}]}{[\text{Acid}]}$)
+  - Hardy-Weinberg Population Genetics ($p + q = 1, p^2 + 2pq + q^2 = 1$)
+
+### 19. Focus Mode & Binaural Beats Audio (`🎧 Focus`)
+- 100% client-side synthesized study sounds using Web Audio API (zero audio files, zero streaming bandwidth).
+- **Binaural Beats**: 🧠 Alpha Waves (10 Hz) for active recall & alertness; 🌙 Theta Waves (6 Hz) for deep memory consolidation.
+- **Soft Pink Noise**: Continuous smooth noise to drown out background ambient chatter.
+- **Integrated Pomodoro Timer**: 25-minute study / 5-minute break countdown with gentle Tibetan singing bowl chime (528 Hz).
+
+### 20. Daily Question Target & Streak Engine
+- Configurable daily MCQ goal: 20, 50, or 100 questions per day.
+- Top navigation progress pill (`🎯 0/50 Qs`) with live updating counter.
+- Celebratory canvas confetti particle burst when target is reached for the day.
 
 ---
 

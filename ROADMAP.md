@@ -66,13 +66,20 @@
 - [x] PWA installable on mobile/tablet via "Add to Home Screen".
 - [x] `host.sh` script: `start` / `stop` / `status` / `restart` for local dev.
 
+## ✅ Milestone 8: Cross-Device Sync, Notes, Custom CBT Studio, Solvers & Focus Audio (COMPLETE)
+- [x] **Cross-Device Backup & Sync Hub**: Zero-cloud profile transfer via JSON backup and one-click base64 sync code with merge capability.
+- [x] **Inline NCERT Sticky Notes**: Personal margin notes on every paragraph with persistence, 3rd "My Notes" tab in Notebook, and printable export sheet.
+- [x] **Custom CBT Practice Test Studio**: Build custom mock exams across Physics, Chemistry, Botany, and Zoology with weak-chapter targeting and custom question counts.
+- [x] **6 Interactive Formula Solvers**: Real-time numerical calculators for Carnot engine, Coulomb's law, De Broglie wavelength, radioactive decay, buffer pH, and Hardy-Weinberg equilibrium.
+- [x] **Focus Mode & Binaural Beats Audio**: 100% offline client-side synthesized 10Hz Alpha / 6Hz Theta waves, pink noise, and Pomodoro study timer with 528Hz singing bowl chime.
+- [x] **Daily Question Goal & Streak Engine**: Configurable MCQ targets (20/50/100 Qs/day) with navbar progress ring and celebratory canvas confetti.
+- [x] **159/159 automated Playwright test assertions passing** (46 audit + 62 core + 14 enterprise + 37 milestone 8).
+
 ---
 
 ## 🔮 Possible Future Enhancements
 
 - [ ] **NEET Rank Predictor**: percentile estimation using historical cutoff curves.
-- [ ] **Cross-device Sync**: optional QR-code-based local network sync (no cloud).
 - [ ] **Handwriting Margin Notes**: Canvas-based stylus annotations on PDF pages.
-- [ ] **Adaptive Question Sequencing**: serve weakest-topic questions first based on accuracy history.
 - [ ] **2026 NEET PYQs**: add once dual-source verification is complete.
 - [ ] **Tamil Nadu & State Board Variant**: extend data schema for state syllabi.
