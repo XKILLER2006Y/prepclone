@@ -1,5 +1,5 @@
 // PrepClone Enterprise Service Worker (100% Offline First)
-const CACHE_NAME = 'prepclone-v2.2.0';
+const CACHE_NAME = 'prepclone-v2.3.0';
 const STATIC_ASSETS = [
   './',
   './index.html',

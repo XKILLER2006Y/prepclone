@@ -43,7 +43,7 @@ Open on any device: PC, Mac, Android, iPhone, tablet. Install as a PWA from your
 | **Formula Solvers** | None | **6 Interactive Solvers (Carnot, Coulomb, etc.)** |
 | **Focus Audio & Beats** | None | **10Hz Alpha / 6Hz Theta Waves + Pomodoro** |
 | **Daily Target Goals** | None | **Configurable MCQ Goal + Streak Engine** |
-| **Offline Capability** | Online only | **100% Offline PWA (Service Worker v2.2.0)** |
+| **Offline Capability** | Online only | **100% Offline PWA (Service Worker v2.3.0)** |
 | **Keyboard Navigation** | None | **Arrow keys, A-D, H, S, Space, Ctrl+K, Alt+F** |
 
 ---

@@ -36,16 +36,16 @@
         <span>🎯</span> <span id="dailyGoalDisplay">0/50</span>
       </div>
       <button class="btn-focus-mode" id="btnFocusMode" onclick="toggleFocusModal()" title="Binaural Beats & Pomodoro Study Audio">
-        <span>🎧</span> Focus
+        <span>🎧</span> <span class="nav-btn-text">Focus</span>
       </button>
       <button class="btn-tool-sync" onclick="openSyncModal()" title="Cross-Device Profile Sync & Backup">
-        <span>☁️</span> Sync
+        <span>☁️</span> <span class="nav-btn-text">Sync</span>
       </button>
       <button class="btn-tool-formula" onclick="toggleFormulaDrawer()" title="NCERT Formulas, Laws & Units (Alt+F)">
-        <span>⚡</span> Formulas <span class="search-key-badge" style="background:rgba(255,107,53,0.25);color:inherit">Alt F</span>
+        <span>⚡</span> <span class="nav-btn-text">Formulas</span> <span class="search-key-badge" style="background:rgba(255,107,53,0.25);color:inherit">Alt F</span>
       </button>
       <button class="search-trigger-btn" onclick="openOmnisearch()" title="Search questions, chapters & NCERT topics (Ctrl+K)">
-        <span>🔍</span> Search <span class="search-key-badge">Ctrl K</span>
+        <span>🔍</span> <span class="nav-btn-text">Search</span> <span class="search-key-badge">Ctrl K</span>
       </button>
       <button class="sound-toggle-btn" id="soundBtn" onclick="toggleSound()" title="Toggle sound effects">🔔</button>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☀</button>
@@ -252,6 +252,7 @@ let cbtAnswers = {};
 let cbtTimeLeft = 0;
 let cbtTimeUsed = 0;
 let cbtTimer = null;
+let cbtIsUntimed = false;
 let cbtReviewFilter = 'all';
 
 // Notebook State
@@ -1060,7 +1061,7 @@ async function renderChapter() {
                       <textarea class="note-textarea" id="note-textarea-${qId}" placeholder="Write personal note, mnemonic, or tricky concept anchor for this paragraph...">${existingNote ? escapeHtml(existingNote.content) : ''}</textarea>
                       <div style="display:flex;gap:8px;justify-content:flex-end">
                         <button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="cancelParaNoteEditor('${qId}')">Cancel</button>
-                        <button class="btn-primary" style="padding:4px 12px;font-size:12px" onclick="saveParaNoteFromEditor('${qId}', '${escapeHtml((p.text || '').slice(0, 100))}', ${p.paraNum || (pi + 1)})">Save Note</button>
+                        <button class="btn-primary" style="padding:4px 12px;font-size:12px" onclick="saveParaNoteFromEditor('${qId}', ${p.paraNum || (pi + 1)})">Save Note</button>
                       </div>
                     </div>
                   </div>
@@ -1866,6 +1867,8 @@ function clearQuiz() {
 
 function showQuizResult() {
   stopQuizTimer();
+  const attempted = quizQuestions.filter((_, i) => quizAnswers[i] !== null && quizAnswers[i] !== 'skip').length;
+  if (attempted > 0) recordDailyGoalAttempt(attempted);
   currentPage = 'quiz-result';
   render();
   window.scrollTo(0, 0);
@@ -2098,7 +2101,7 @@ function renderMixQuizSetup() {
           </div>
         </div>
         <div style="display:flex;justify-content:flex-end">
-          <button class="btn-primary" style="padding:12px 24px;font-size:15px;font-weight:700" onclick="launchCustomCbtFromStudio()">
+          <button id="btnLaunchCustomCbt" class="btn-primary" style="padding:12px 24px;font-size:15px;font-weight:700" onclick="launchCustomCbtFromStudio()">
             🚀 Generate & Start Custom CBT Test ➔
           </button>
         </div>
@@ -2228,6 +2231,7 @@ async function startCbtMock(presetKey) {
   cbtIndexInSection = 0;
   cbtQuestionState = {};
   cbtAnswers = {};
+  cbtIsUntimed = false;
   cbtTimeLeft = durationMins * 60;
   cbtTimeUsed = 0;
 
@@ -2251,9 +2255,13 @@ function stopCbtTimer() {
 }
 
 function tickCbt() {
-  cbtTimeLeft--;
   cbtTimeUsed++;
   const el = document.getElementById('cbt-timer-disp');
+  if (cbtIsUntimed) {
+    if (el) el.textContent = `⏱ ${fmtTime(cbtTimeUsed)} (Untimed)`;
+    return;
+  }
+  cbtTimeLeft--;
   if (el) {
     el.textContent = fmtTime(cbtTimeLeft);
     if (cbtTimeLeft <= 300) el.classList.add('danger');
@@ -2357,6 +2365,17 @@ function cbtSubmitConfirm() {
 
 function showCbtResult() {
   stopCbtTimer();
+  let attempted = 0;
+  cbtSections.forEach(sec => {
+    (cbtSectionData[sec] || []).forEach((_, idx) => {
+      const qKey = `${sec}_${idx}`;
+      const st = cbtQuestionState[qKey];
+      if (cbtAnswers[qKey] !== null && (st === 'answered' || st === 'answered-marked')) {
+        attempted++;
+      }
+    });
+  });
+  if (attempted > 0) recordDailyGoalAttempt(attempted);
   currentPage = 'cbt-result';
   render();
   window.scrollTo(0, 0);
@@ -2389,7 +2408,7 @@ function renderCbtExam() {
           <span class="cbt-tag">NEET CBT</span>
           <span style="font-weight:700;font-size:15px">${cbtExamTitle}</span>
         </div>
-        <div class="cbt-timer" id="cbt-timer-disp">⏱ ${fmtTime(cbtTimeLeft)}</div>
+        <div class="cbt-timer ${!cbtIsUntimed && cbtTimeLeft <= 300 ? 'danger' : ''}" id="cbt-timer-disp">⏱ ${cbtIsUntimed ? fmtTime(cbtTimeUsed) + ' (Untimed)' : fmtTime(cbtTimeLeft)}</div>
       </div>
 
       <div class="cbt-sections-bar">
@@ -4768,6 +4787,7 @@ function deleteNote(qId) {
   const notes = getNotes();
   delete notes[qId];
   localStorage.setItem('prepclone-notes', JSON.stringify(notes));
+  saveAutoSnapshot();
 }
 
 function toggleParaNoteEditor(qId) {
@@ -4785,10 +4805,13 @@ function toggleParaNoteEditor(qId) {
   }
 }
 
-function saveParaNoteFromEditor(qId, paraSnippet, paraNum) {
+function saveParaNoteFromEditor(qId, paraNum) {
   const ta = document.getElementById(`note-textarea-${qId}`);
   if (!ta) return;
   const val = ta.value.trim();
+  const paraEl = document.getElementById(`ncert-para-${qId}`);
+  const textEl = paraEl ? paraEl.querySelector('.ncert-para-text') : null;
+  const paraSnippet = (textEl ? textEl.innerText : '').trim().slice(0, 100);
   saveNote(qId, val, { paraSnippet, paraNum });
   renderChapter();
 }
@@ -4812,20 +4835,20 @@ function removeParaNote(qId) {
   }
 }
 
-function jumpToNoteParagraph(bookId, chIdx, pageNum, qId) {
+async function jumpToNoteParagraph(bookId, chIdx, pageNum, qId) {
   currentBook = bookId;
   currentChapter = chIdx;
   currentPageNum = pageNum;
   currentPage = 'chapter';
-  renderChapter();
-  setTimeout(() => {
+  await renderChapter();
+  requestAnimationFrame(() => {
     const el = document.getElementById(`ncert-para-${qId}`);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       el.style.boxShadow = '0 0 0 3px #f59e0b';
       setTimeout(() => { el.style.boxShadow = ''; }, 2500);
     }
-  }, 100);
+  });
 }
 
 function exportMyNotes() {
@@ -4922,7 +4945,7 @@ async function launchCustomCbtFromStudio() {
     if ((selectedSubjs.includes('botany') || selectedSubjs.includes('zoology')) && meta.subject === 'biology') matchesSubj = true;
     if (!matchesSubj) return;
 
-    const pages = window.allLoadedBooks?.[bookId] || [];
+    const pages = questionData[bookId] || [];
     pages.forEach(p => {
       (p.questions || []).forEach((q, qi) => {
         const qid = `${bookId}_${p.chapter}_${p.page}_${qi}`;
@@ -4932,7 +4955,7 @@ async function launchCustomCbtFromStudio() {
         } else if (focusMode === 'pyq') {
           if (!q.pyq && !q.year) return;
         }
-        questionPool.push({ ...q, qid, book: bookId, chapter: p.chapter, page: p.page });
+        questionPool.push({ ...q, qid, origId: qid, book: bookId, chapter: p.chapter, page: p.page });
       });
     });
   });
@@ -4945,9 +4968,10 @@ async function launchCustomCbtFromStudio() {
       if (selectedSubjs.includes('chemistry') && meta.subject === 'chemistry') matchesSubj = true;
       if ((selectedSubjs.includes('botany') || selectedSubjs.includes('zoology')) && meta.subject === 'biology') matchesSubj = true;
       if (!matchesSubj) return;
-      (window.allLoadedBooks?.[bookId] || []).forEach(p => {
+      (questionData[bookId] || []).forEach(p => {
         (p.questions || []).forEach((q, qi) => {
-          questionPool.push({ ...q, qid: `${bookId}_${p.chapter}_${p.page}_${qi}`, book: bookId, chapter: p.chapter, page: p.page });
+          const qid = `${bookId}_${p.chapter}_${p.page}_${qi}`;
+          questionPool.push({ ...q, qid, origId: qid, book: bookId, chapter: p.chapter, page: p.page });
         });
       });
     });
@@ -4957,20 +4981,44 @@ async function launchCustomCbtFromStudio() {
   questionPool.sort(() => Math.random() - 0.5);
   const selectedQuestions = questionPool.slice(0, Math.min(qCount, questionPool.length));
 
-  cbtQuestions = selectedQuestions;
-  cbtActiveIdx = 0;
-  cbtState = {};
-  cbtActiveSection = 'Custom Test';
-  cbtTotalTime = isTimed ? (selectedQuestions.length * 60) : 0;
-  cbtTimeLeft = cbtTotalTime;
-  cbtTitle = `Custom Practice Drill (${selectedQuestions.length} Qs)`;
-  cbtMaxMarks = selectedQuestions.length * 4;
+  // Group into subject sections
+  const sections = {};
+  selectedQuestions.forEach(q => {
+    let sec = 'Custom Practice';
+    if (q.book?.startsWith('physics-')) sec = 'Physics';
+    else if (q.book?.startsWith('chemistry-')) sec = 'Chemistry';
+    else if (q.book?.startsWith('biology-')) {
+      if ((q.chapter < 13 && q.book === 'biology-11') || ([0, 3, 4, 8, 9, 10, 11].includes(q.chapter) && q.book === 'biology-12')) {
+        sec = 'Botany';
+      } else {
+        sec = 'Zoology';
+      }
+    }
+    if (!sections[sec]) sections[sec] = [];
+    sections[sec].push(q);
+  });
 
-  cbtSections = {
-    'Custom Test': selectedQuestions.map((_, i) => i)
-  };
+  cbtExamTitle = `Custom Practice Drill (${selectedQuestions.length} Qs)`;
+  cbtSections = Object.keys(sections);
+  cbtSectionData = sections;
+  cbtActiveSection = cbtSections[0] || 'Custom Practice';
+  cbtIndexInSection = 0;
+  cbtQuestionState = {};
+  cbtAnswers = {};
+  cbtIsUntimed = !isTimed;
+  cbtTimeLeft = isTimed ? (selectedQuestions.length * 60) : 0;
+  cbtTimeUsed = 0;
 
-  startCbtTimer();
+  cbtSections.forEach(sec => {
+    sections[sec].forEach((q, idx) => {
+      const qKey = `${sec}_${idx}`;
+      cbtQuestionState[qKey] = (sec === cbtActiveSection && idx === 0) ? 'not-answered' : 'not-visited';
+      cbtAnswers[qKey] = null;
+    });
+  });
+
+  stopCbtTimer();
+  cbtTimer = setInterval(tickCbt, 1000);
   currentPage = 'cbt-exam';
   render();
   window.scrollTo(0, 0);
@@ -5146,8 +5194,16 @@ function solveCarnot() {
   const qh = parseFloat(document.getElementById('sol-carnot-qh')?.value) || 1000;
   const resEl = document.getElementById('res-carnot');
   if (!resEl) return;
+  if (th <= 0 || tc <= 0) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: Absolute temperatures must be positive Kelvin (T > 0)</span>`;
+    return;
+  }
   if (tc >= th) {
     resEl.innerHTML = `<span style="color:#ef4444">Error: T_H must be strictly greater than T_C</span>`;
+    return;
+  }
+  if (qh <= 0) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: Heat input Q_H must be greater than 0</span>`;
     return;
   }
   const eta = 1 - (tc / th);
@@ -5200,8 +5256,8 @@ function solveDecay() {
   const t = parseFloat(document.getElementById('sol-decay-t')?.value) || 15;
   const resEl = document.getElementById('res-decay');
   if (!resEl) return;
-  if (thalf <= 0) {
-    resEl.innerHTML = `<span style="color:#ef4444">Error: Half-life must be > 0</span>`;
+  if (n0 <= 0 || thalf <= 0 || t < 0) {
+    resEl.innerHTML = `<span style="color:#ef4444">Error: Initial quantity and half-life must be > 0, time t must be ≥ 0</span>`;
     return;
   }
   const n = t / thalf;
@@ -5729,9 +5785,10 @@ function startFocusAudio(type) {
 }
 
 function stopFocusAudio() {
-  if (focusOscLeft) { try { focusOscLeft.stop(); } catch(e){} focusOscLeft = null; }
-  if (focusOscRight) { try { focusOscRight.stop(); } catch(e){} focusOscRight = null; }
-  if (focusNoiseNode) { try { focusNoiseNode.stop(); } catch(e){} focusNoiseNode = null; }
+  if (focusOscLeft) { try { focusOscLeft.stop(); focusOscLeft.disconnect(); } catch(e){} focusOscLeft = null; }
+  if (focusOscRight) { try { focusOscRight.stop(); focusOscRight.disconnect(); } catch(e){} focusOscRight = null; }
+  if (focusNoiseNode) { try { focusNoiseNode.stop(); focusNoiseNode.disconnect(); } catch(e){} focusNoiseNode = null; }
+  if (focusGainNode) { try { focusGainNode.disconnect(); } catch(e){} focusGainNode = null; }
   focusAudioPlaying = false;
   currentFocusType = null;
   const btn = document.getElementById('btnFocusMode');
@@ -5822,10 +5879,11 @@ function getDailyGoal() {
   }
 }
 
-function recordDailyGoalAttempt() {
+function recordDailyGoalAttempt(qty = 1) {
+  if (qty <= 0) return;
   const goal = getDailyGoal();
   const prevCount = goal.count;
-  goal.count = prevCount + 1;
+  goal.count = prevCount + qty;
   localStorage.setItem('prepclone-daily-goal', JSON.stringify(goal));
   updateDailyGoalDisplay();
 

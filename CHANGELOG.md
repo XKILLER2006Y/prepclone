@@ -4,6 +4,26 @@ All notable changes to PrepClone are documented in reverse-chronological order.
 
 ---
 
+## [v2.3.0] — 2026-09-10 — Maximum Exhaustive Bug Hunting & Optimizations Spree
+
+### 🐞 Critical Bug Fixes & Hardening
+- **Custom CBT Studio Launcher Crash Fixed**: Resolved `ReferenceError: startCbtTimer is not defined` by connecting to standard CBT interval timer mechanism `stopCbtTimer()` and `cbtTimer = setInterval(tickCbt, 1000)`.
+- **Custom CBT Question Pool Sampling Fixed**: Replaced unassigned `window.allLoadedBooks` reference with authentic global memory cache `questionData[bookId]`, ensuring questions from all selected subjects and focus modes (All, Weak Chapters, PYQs) are accurately sampled.
+- **Custom CBT State Schema Restructured**: Standardized `cbtSections` (array of section names) and `cbtSectionData` (subject-indexed question mapping) so custom tests render proper subject tabs and seamless question palette navigation.
+- **Untimed CBT Instant Auto-Submission Eliminated**: Added `cbtIsUntimed` flag; in untimed mode, timer counts up elapsed study time (`⏱ MM:SS (Untimed)`) without decrementing into negative numbers or auto-submitting.
+- **Note Editor Single-Quote Injection Fixed**: Eliminated parameter interpolation in `onclick` string attributes; `saveParaNoteFromEditor()` now retrieves paragraph text dynamically from the DOM, safely handling apostrophes and quotes (e.g. "Newton's laws", "Earth's crust").
+- **Async Navigation Race Condition Resolved**: `jumpToNoteParagraph()` now awaits `renderChapter()` before executing `scrollIntoView()` and target highlighting.
+- **Web Audio Node Leak Cleaned Up**: `stopFocusAudio()` now invokes `.disconnect()` on `focusOscLeft`, `focusOscRight`, `focusNoiseNode`, and `focusGainNode`, preventing audio node graph accumulation.
+- **Formula Solvers Input Validation Hardened**: Added absolute temperature guards ($T > 0\text{ K}$) and positive quantity bounds to `solveCarnot()`, `solveCoulomb()`, and `solveDecay()`.
+- **Comprehensive Daily Target Tracking**: Integrated `recordDailyGoalAttempt(qty)` with CBT and Quick Quiz submissions so every question attempted counts toward the student's daily target.
+
+### 📱 Responsive Layout & Performance Optimizations
+- **Mobile Navbar Zero-Overflow (< 640px & < 480px)**: Wrapped navbar labels in `<span class="nav-btn-text">` and collapsed buttons into compact badges; concealed brand text on small screens to maintain crisp `P` logo and guarantee all 8 controls fit cleanly on screens down to 320px with zero horizontal scrolling.
+- **Offline Cache Bumped**: Updated Service Worker cache to `prepclone-v2.3.0` for seamless background cache refresh.
+- **Automated Regression Suite Expansion**: Added 45-point comprehensive validation in `scratch/test_milestone8_features.js` (total 105 automated test assertions across 3 suites with 100% pass rate).
+
+---
+
 ## [v2.2.0] — 2026-09-10 — Enterprise Milestone 8 · Cross-Device Sync, Notes, Custom CBT Studio, Solvers & Focus Audio
 
 ### ☁️ Cross-Device Backup & Sync Hub (Zero-Cloud Privacy)

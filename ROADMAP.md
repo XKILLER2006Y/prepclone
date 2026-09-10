@@ -75,6 +75,18 @@
 - [x] **Daily Question Goal & Streak Engine**: Configurable MCQ targets (20/50/100 Qs/day) with navbar progress ring and celebratory canvas confetti.
 - [x] **159/159 automated Playwright test assertions passing** (46 audit + 62 core + 14 enterprise + 37 milestone 8).
 
+## ✅ Milestone 9: Maximum Exhaustive Bug Hunting & Optimizations Spree (COMPLETE)
+- [x] **Custom CBT Studio Launcher Crash Fixed**: Resolved `startCbtTimer` undefined reference error with robust interval timer initialization.
+- [x] **Question Sampling Cache Fixed**: Resolved `allLoadedBooks` unassigned cache miss by linking directly to `questionData` for accurate chapter question sampling.
+- [x] **CBT Engine State Normalization**: Structured `cbtSectionData` and `cbtSections` arrays to support custom sections, question palettes, and scorecard generation.
+- [x] **Untimed CBT Engine Hardened**: Added `cbtIsUntimed` flag, elapsed timer count-up, and eliminated premature 1-second auto-submission.
+- [x] **Note Editor Quoting Sanitization**: Eradicated quote injection bugs on textbook paragraphs with apostrophes (e.g. "Newton's laws") by pulling text from the DOM.
+- [x] **Audio Graph Node Leak Cleanup**: Added `.disconnect()` calls in `stopFocusAudio()` to ensure zero active audio node accumulation.
+- [x] **Formula Solvers Input Validation**: Guarded physical constraints (positive Kelvin, non-zero half-lives) in Carnot, Coulomb, and Decay calculators.
+- [x] **Mobile Topbar Zero-Overflow**: Collapsed navigation controls cleanly on $\le 480$px / $\le 640$px screens, fitting all 8 controls comfortably with zero horizontal scroll.
+- [x] **Offline Cache Bump**: Updated Service Worker cache to `prepclone-v2.3.0`.
+- [x] **105/105 Automated Assertions Passing** across 3 Playwright test suites with 0 console errors and 0 404s.
+
 ---
 
 ## 🔮 Possible Future Enhancements

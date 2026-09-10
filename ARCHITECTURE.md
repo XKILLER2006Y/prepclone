@@ -37,7 +37,7 @@ graph TD
 
 ```
 preppage-clone/
-├── index.html              # Entire SPA (4,570 lines): router, views, all JS logic
+├── index.html              # Entire SPA (~6,000 lines): router, views, all JS logic
 ├── styles.css              # All CSS: themes, animations, print, responsive (64 KB)
 ├── sw.js                   # Service Worker (prepclone-v2.1.0): offline precache
 ├── manifest.json           # PWA manifest: icons, theme, display mode
